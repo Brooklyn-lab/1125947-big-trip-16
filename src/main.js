@@ -22,11 +22,11 @@ renderTemplate(mainTripEvents, createMainSortFormTemplate(), RenderPosition.BEFO
 renderTemplate(mainTripEvents, createMainTripListTemplate(), RenderPosition.BEFOREEND);
 
 const mainTripList = mainTripEvents.querySelector('.trip-events__list');
-const tripPointCount = 2;
+const TRIP_POINT_COUNT = 2;
 
 renderTemplate(mainTripList, createMainCreateFormTemplate(), RenderPosition.BEFOREEND);
 renderTemplate(mainTripList, createMainEditFormTemplate(), RenderPosition.BEFOREEND);
 
-for (let i = 0; i < tripPointCount; i++) {
+for (let i = 0; i < TRIP_POINT_COUNT; i++) {
    renderTemplate(mainTripList, createMainTripPointTemplate(), RenderPosition.BEFOREEND);
 }
