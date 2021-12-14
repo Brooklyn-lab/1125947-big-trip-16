@@ -1,11 +1,11 @@
 import dayjs from 'dayjs';
+import { createElement } from '../render.js';
 
-export const createMainTripPointTemplate = (point) => {
-  const { basePrice, dateFrom, dateTo, destination: { name }, offer: { type } } = point;
-  const generateDate = (date) => dayjs(date).format('h:mm:ss A');
+const createMainTripPointTemplate = (point) => {
+   const { basePrice, dateFrom, dateTo, destination: { name }, offer: { type } } = point;
+   const generateDate = (date) => dayjs(date).format('h:mm:ss A');
 
-  return `
-   <li class="trip-events__item">
+   return `<li class="trip-events__item">
       <div class="event">
       <time class="event__date" datetime="2019-03-18">MAR 18</time>
       <div class="event__type">
@@ -41,6 +41,30 @@ export const createMainTripPointTemplate = (point) => {
          <span class="visually-hidden">Open event</span>
       </button>
       </div>
-   </li>
-   `;
+   </li>`
 };
+
+export default class MainTripPointView {
+   #element = null;
+   #point = null;
+
+   constructor(point) {
+      this.#point = point
+   }
+
+   get element() {
+      if (!this.#element) {
+         this.#element = createElement(this.template);
+      }
+
+      return this.#element;
+   }
+
+   get template() {
+      return createMainTripPointTemplate(this.#point);
+   }
+
+   removeElement() {
+      this.#element = null;
+   }
+}

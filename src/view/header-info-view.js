@@ -1,5 +1,7 @@
-export const createHeaderInfoTemplate = () => `
-   <section class="trip-main__trip-info  trip-info">
+import { createElement } from '../render.js';
+
+const createHeaderInfoTemplate = () => (
+   `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
       <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
 
@@ -9,5 +11,26 @@ export const createHeaderInfoTemplate = () => `
       <p class="trip-info__cost">
       Total: &euro;&nbsp;<span class="trip-info__cost-value">1230</span>
       </p>
-   </section>   
-   `;
+   </section>`
+);
+
+
+export default class HeaderInfoView {
+   #element = null;
+
+   get element() {
+      if (!this.#element) {
+         this.#element = createElement(this.template);
+      }
+
+      return this.#element;
+   }
+
+   get template() {
+      return createHeaderInfoTemplate();
+   }
+
+   removeElement() {
+      this.#element = null;
+   }
+}
