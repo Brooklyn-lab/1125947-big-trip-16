@@ -1,11 +1,6 @@
 import dayjs from 'dayjs';
-
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
+import { getRandomInteger } from '../utils';
+import { generateData } from '../utils.js';
 
 const generateDate = (max, min) => {
   const daysGap = getRandomInteger(min, max);
@@ -42,9 +37,43 @@ const OFFERS = [
   { title: 'Business lounge', price: 160 }
 ];
 
-const generateData = (array) => {
-  const randomIndex = getRandomInteger(0, array.length - 1);
-  return array[randomIndex];
+const randomStrings = (array) => {
+  const strings = [];
+  for (let i = 0; i < array.length; i++) {
+    if (i >= getRandomInteger(0, 5)) {
+      break;
+    }
+    const randomIndex = getRandomInteger(0, array.length - 1);
+    strings.push(array[randomIndex]);
+  }
+  return strings.join(' ');
+};
+
+const randomLinks = (description) => {
+  const inks = [];
+  for (let i = 0; i <= 5; i++) {
+    if (i >= getRandomInteger(0, 5)) {
+      break;
+    }
+    inks.push({
+      src: `http://picsum.photos/300/200?r=${Math.random()}`,
+      description: generateData(description)
+    });
+
+  }
+  return inks;
+};
+
+const randomOffers = (offersArray) => {
+  const offers = [];
+  for (let i = 0; i <= 5; i++) {
+    if (i >= getRandomInteger(0, 5)) {
+      break;
+    }
+    const randomIndex = getRandomInteger(0, offersArray.length - 1);
+    offers.push(offersArray[randomIndex]);
+  }
+  return offers;
 };
 
 export const generatePoint = () => ({
@@ -52,18 +81,13 @@ export const generatePoint = () => ({
   dateFrom: generateDate(1, 2),
   dateTo: generateDate(2, 4),
   destination: {
-    description: generateData(DESCRIPTION),
+    description: randomStrings(DESCRIPTION),
     name: generateData(POINTS_NAMES),
-    pictures: [
-      {
-        src: `http://picsum.photos/300/200?r=${Math.random()}`,
-        description: generateData(DESCRIPTION),
-      }
-    ]
+    pictures: randomLinks(DESCRIPTION),
   },
   isFavorite: true,
   offer: {
     type: generateData(POINT_ROUTE_TYPES),
-    offers: generateData(OFFERS)
+    offers: randomOffers(OFFERS)
   }
 });
