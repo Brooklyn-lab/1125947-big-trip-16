@@ -50,18 +50,30 @@ const randomStrings = (array) => {
 };
 
 const randomLinks = (description) => {
-  const fiveOffers = [];
+  const inks = [];
   for (let i = 0; i <= 5; i++) {
     if (i >= getRandomInteger(0, 5)) {
       break;
     }
-    fiveOffers.push({
+    inks.push({
       src: `http://picsum.photos/300/200?r=${Math.random()}`,
       description: generateData(description)
     });
 
   }
-  return fiveOffers;
+  return inks;
+};
+
+const randomOffers = (offersArray) => {
+  const offers = [];
+  for (let i = 0; i <= 5; i++) {
+    if (i >= getRandomInteger(0, 5)) {
+      break;
+    }
+    const randomIndex = getRandomInteger(0, offersArray.length - 1);
+    offers.push(offersArray[randomIndex]);
+  }
+  return offers;
 };
 
 export const generatePoint = () => ({
@@ -76,6 +88,6 @@ export const generatePoint = () => ({
   isFavorite: true,
   offer: {
     type: generateData(POINT_ROUTE_TYPES),
-    offers: generateData(OFFERS)
+    offers: randomOffers(OFFERS)
   }
 });

@@ -55,18 +55,27 @@ const createMainFormTemplate = (point, buttonText, openButton) => {
 
    const generateDate = (date) => dayjs(date).format('MM/DD/YYYY h:mm');
 
-   const createPointOffer = (offer) => (
-      `<div class="event__offer-selector">
-         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-         <label class="event__offer-label" for="event-offer-luggage-1">
+  function offerTemplate() {
+    const offer = offers.map(offer => {
+      return `<div class="event__offer-selector">
+        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+            <label class="event__offer-label" for="event-offer-luggage-1">
             <span class="event__offer-title">${offer.title}</span>
             &plus;&euro;&nbsp;
             <span class="event__offer-price">${offer.price}</span>
          </label>
       </div>`
-   );
+    })
 
-   const pointOfferTemplate = createPointOffer(offers);
+    return `<div class="event__available-offers">
+            ${offer.join(' ')}
+       </div>`
+  };
+
+  const destinationOffers = offers !== undefined
+    ?
+    `${offerTemplate()}`
+    : '';
 
    return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -166,9 +175,7 @@ const createMainFormTemplate = (point, buttonText, openButton) => {
             <section class="event__section  event__section--offers">
                <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-               <div class="event__available-offers">
-                  ${pointOfferTemplate} ${pointOfferTemplate} ${pointOfferTemplate}
-               </div>
+                ${destinationOffers}
             </section>
 
             ${destinationTemplate}
