@@ -49,7 +49,7 @@ const renderPoint = (pointListElement, task, buttonText) => {
 const TRIP_POINT_COUNT = 4;
 const POINT_COUNT = 20;
 const points = Array.from({length: POINT_COUNT}, generatePoint);
-const BUTTON_TEXT_CANCEL = 'Cancel';
+// const BUTTON_TEXT_CANCEL = 'Cancel';
 const BUTTON_TEXT_DELETE = 'Delete';
 const createButtonOpenEditPointTemplate =
   `<button class="event__rollup-btn" type="button">
