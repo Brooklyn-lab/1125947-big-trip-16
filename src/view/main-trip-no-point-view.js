@@ -1,10 +1,9 @@
-import {createElement} from '../render';
+import { createElement } from '../render';
 
-const createNoPointTemplate = () => (
+const createNoPointTemplate = () =>
   `<p class="trip-events__msg">
   Click New Event to create your first point
-  </p>`
-);
+  </p>`;
 
 export default class NoPointView {
   #element = null;

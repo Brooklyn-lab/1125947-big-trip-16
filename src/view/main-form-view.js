@@ -2,78 +2,64 @@ import dayjs from 'dayjs';
 import { createElement } from '../render.js';
 
 const createMainFormTemplate = (point) => {
-   const {
-      basePrice,
-      dateFrom,
-      dateTo,
-      destination: {
-         name,
-         description,
-         pictures
-      },
-      offer: {
-         type,
-         offers
-      }
-   } = point;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination: { name, description, pictures },
+    offer: { type, offers },
+  } = point;
 
-   function imageTemplate() {
-      const images = pictures.map(picture => {
-         return `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
-      })
+  function imageTemplate() {
+    const images = pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`);
 
-      return `
+    return `
          <div class="event__photos-container">
             <div class="event__photos-tape">
                ${images.join(' ')}
             </div>
          </div>
-      `
-   };
+      `;
+  }
 
-   const destinationDescriptopn = description !== undefined
+  const destinationDescriptopn =
+    description !== undefined
       ? `<p class="event__destination-description">${description}</p>`
-      : '';
+      : ' ';
 
-   const destinationImages = pictures !== undefined
-      ?
-      `${imageTemplate()}`
-      : '';
+  const destinationImages = pictures !== undefined ? `${imageTemplate()}` : ' ';
 
-   const destinationTemplate = destinationImages && destinationDescriptopn !== false
-      ?
-      `<section class="event__section  event__section--destination">
+  const destinationTemplate =
+    destinationImages && destinationDescriptopn !== false
+      ? `<section class="event__section  event__section--destination">
          <h3 class="event__section-title  event__section-title--destination">Destination</h3>
          ${destinationDescriptopn}
          ${destinationImages}
       </section>`
-      : '';
+      : ' ';
 
-   const generateDate = (date) => dayjs(date).format('MM/DD/YYYY h:mm');
+  const generateDate = (date) => dayjs(date).format('MM/DD/YYYY h:mm');
 
-   function offerTemplate() {
-      const offer = offers.map(offer => {
-         return `<div class="event__offer-selector">
+  function offerTemplate() {
+    const offer = offers.map((item) => (
+      `<div class="event__offer-selector">
          <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
                <label class="event__offer-label" for="event-offer-luggage-1">
-               <span class="event__offer-title">${offer.title}</span>
+               <span class="event__offer-title">${item.title}</span>
                &plus;&euro;&nbsp;
-               <span class="event__offer-price">${offer.price}</span>
+               <span class="event__offer-price">${item.price}</span>
             </label>
-         </div>`
-      })
+         </div>`)
+    );
 
-      return `<div class="event__available-offers">
+    return `<div class="event__available-offers">
             ${offer.join(' ')}
-         </div>`
-   };
+         </div>`;
+  }
 
-   const destinationOffers = offers !== undefined
-      ?
-      `${offerTemplate()}`
-      : '';
+  const destinationOffers = offers !== undefined ? `${offerTemplate()}` : ' ';
 
-   return `<li class="trip-events__item">
+  return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
          <header class="event__header">
             <div class="event__type-wrapper">
@@ -179,30 +165,30 @@ const createMainFormTemplate = (point) => {
             ${destinationTemplate}
          </section>
       </form>
-   </li>`
+   </li>`;
 };
 
 export default class MainFormView {
-   #element = null;
-   #point = null;
+  #element = null;
+  #point = null;
 
-   constructor(point) {
-      this.#point = point
-   }
+  constructor(point) {
+    this.#point = point;
+  }
 
-   get element() {
-      if (!this.#element) {
-         this.#element = createElement(this.template);
-      }
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
+    }
 
-      return this.#element;
-   }
+    return this.#element;
+  }
 
-   get template() {
-      return createMainFormTemplate(this.#point);
-   }
+  get template() {
+    return createMainFormTemplate(this.#point);
+  }
 
-   removeElement() {
-      this.#element = null;
-   }
+  removeElement() {
+    this.#element = null;
+  }
 }

@@ -49,11 +49,13 @@ const renderPoint = (pointListElement, task) => {
 
   pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
     replaceFormToPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   pointEditComponent.element.querySelector('form').addEventListener('submit', (evt) => {
     evt.preventDefault();
     replaceFormToPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(pointListElement, pointComponent.element, RenderPosition.BEFOREEND);
@@ -72,5 +74,3 @@ if (points.length === 0) {
     renderPoint(listComponent.element, points[i]);
   }
 }
-
-
