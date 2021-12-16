@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { createElement } from '../render.js';
 
-const createMainFormTemplate = (point, buttonText, openButton) => {
+const createMainFormTemplate = (point) => {
    const {
       basePrice,
       dateFrom,
@@ -31,10 +31,6 @@ const createMainFormTemplate = (point, buttonText, openButton) => {
       `
    };
 
-   const button = openButton !== undefined
-      ? openButton
-      : '';
-
    const destinationDescriptopn = description !== undefined
       ? `<p class="event__destination-description">${description}</p>`
       : '';
@@ -55,27 +51,27 @@ const createMainFormTemplate = (point, buttonText, openButton) => {
 
    const generateDate = (date) => dayjs(date).format('MM/DD/YYYY h:mm');
 
-  function offerTemplate() {
-    const offer = offers.map(offer => {
-      return `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
-            <label class="event__offer-label" for="event-offer-luggage-1">
-            <span class="event__offer-title">${offer.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-         </label>
-      </div>`
-    })
+   function offerTemplate() {
+      const offer = offers.map(offer => {
+         return `<div class="event__offer-selector">
+         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-1" type="checkbox" name="event-offer-luggage" checked>
+               <label class="event__offer-label" for="event-offer-luggage-1">
+               <span class="event__offer-title">${offer.title}</span>
+               &plus;&euro;&nbsp;
+               <span class="event__offer-price">${offer.price}</span>
+            </label>
+         </div>`
+      })
 
-    return `<div class="event__available-offers">
+      return `<div class="event__available-offers">
             ${offer.join(' ')}
-       </div>`
-  };
+         </div>`
+   };
 
-  const destinationOffers = offers !== undefined
-    ?
-    `${offerTemplate()}`
-    : '';
+   const destinationOffers = offers !== undefined
+      ?
+      `${offerTemplate()}`
+      : '';
 
    return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -168,14 +164,16 @@ const createMainFormTemplate = (point, buttonText, openButton) => {
             </div>
 
             <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-            <button class="event__reset-btn" type="reset">${buttonText}</button>
-            ${button}
+            <button class="event__reset-btn" type="reset">Delete</button>
+            <button class="event__rollup-btn" type="button">
+                  <span class="visually-hidden">Open event</span>
+            </button>
          </header>
          <section class="event__details">
             <section class="event__section  event__section--offers">
                <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-                ${destinationOffers}
+               ${destinationOffers}
             </section>
 
             ${destinationTemplate}
@@ -187,13 +185,9 @@ const createMainFormTemplate = (point, buttonText, openButton) => {
 export default class MainFormView {
    #element = null;
    #point = null;
-   #buttonText = null;
-   #openButton = null;
 
-   constructor(point, buttonText, openButton) {
-      this.#point = point,
-         this.#buttonText = buttonText,
-         this.#openButton = openButton
+   constructor(point) {
+      this.#point = point
    }
 
    get element() {
@@ -205,7 +199,7 @@ export default class MainFormView {
    }
 
    get template() {
-      return createMainFormTemplate(this.#point, this.#buttonText, this.#openButton);
+      return createMainFormTemplate(this.#point);
    }
 
    removeElement() {
