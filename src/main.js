@@ -6,7 +6,7 @@ import MainTripListView from './view/main-trip-list-view.js';
 import MainFormView from './view/main-form-view.js';
 import MainTripPointView from './view/main-trip-point-view.js';
 import NoPointView from './view/main-trip-no-point-view.js';
-import { render, RenderPosition, replace } from './utils/render';
+import { render, RenderPosition, replace } from './utils/render.js';
 import { generatePoint } from './mock/task.js';
 
 const headerMainElement = document.querySelector('.trip-main');
@@ -49,10 +49,12 @@ const renderPoint = (pointListElement, task) => {
 
   pointEditComponent.setEditClickHandler(() => {
     replaceFormToPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   pointEditComponent.setFormSubmitHandler(() => {
     replaceFormToPoint();
+    document.removeEventListener('keydown', onEscKeyDown);
   });
 
   render(pointListElement, pointComponent, RenderPosition.BEFOREEND);
@@ -71,5 +73,3 @@ if (points.length === 0) {
     renderPoint(listComponent, points[i]);
   }
 }
-
-

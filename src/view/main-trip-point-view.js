@@ -2,7 +2,13 @@ import dayjs from 'dayjs';
 import AbstractView from './abstract-view';
 
 const createMainTripPointTemplate = (point) => {
-  const { basePrice, dateFrom, dateTo, destination: { name }, offer: { type } } = point;
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination: { name },
+    offer: { type },
+  } = point;
   const generateDate = (date) => dayjs(date).format('h:mm:ss A');
 
   return `<li class="trip-events__item">
@@ -48,7 +54,7 @@ export default class MainTripPointView extends AbstractView {
   #point = null;
 
   constructor(point) {
-    super()
+    super();
     this.#point = point;
   }
 
