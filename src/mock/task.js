@@ -1,15 +1,50 @@
 import dayjs from 'dayjs';
-import { getRandomInteger } from '../utils';
-import { generateData } from '../utils.js';
+import { getRandomInteger } from '../utils/common.js';
+
+const generateData = (array) => {
+  const randomIndex = getRandomInteger(0, array.length - 1);
+  return array[randomIndex];
+};
 
 const generateDate = (max, min) => {
   const daysGap = getRandomInteger(min, max);
   return dayjs().add(daysGap, 'day').toDate();
 };
 
-const DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'.match(/\S.*?\."?(?=\s|$)/g);
-const POINT_ROUTE_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-const POINTS_NAMES = ['Nagasaki', 'Frankfurt', 'Venice', 'Rome', 'Venice', 'Saint Petersburg', 'Helsinki', 'Den Haag', 'Madrid', 'Milan', 'Geneva', 'Berlin', 'Hiroshima', 'Valencia', 'Rotterdam', 'Paris', 'Sochi'];
+const DESCRIPTION =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'.match(
+    /\S.*?\."?(?=\s|$)/g,
+  );
+const POINT_ROUTE_TYPES = [
+  'taxi',
+  'bus',
+  'train',
+  'ship',
+  'drive',
+  'flight',
+  'check-in',
+  'sightseeing',
+  'restaurant',
+];
+const POINTS_NAMES = [
+  'Nagasaki',
+  'Frankfurt',
+  'Venice',
+  'Rome',
+  'Venice',
+  'Saint Petersburg',
+  'Helsinki',
+  'Den Haag',
+  'Madrid',
+  'Milan',
+  'Geneva',
+  'Berlin',
+  'Hiroshima',
+  'Valencia',
+  'Rotterdam',
+  'Paris',
+  'Sochi',
+];
 const OFFERS = [
   { title: 'Choose VIP area', price: 70 },
   { title: 'Choose live music', price: 150 },
@@ -34,7 +69,7 @@ const OFFERS = [
   { title: 'Wake up at a certain time', price: 140 },
   { title: 'Choose meal', price: 120 },
   { title: 'Upgrade to comfort class', price: 120 },
-  { title: 'Business lounge', price: 160 }
+  { title: 'Business lounge', price: 160 },
 ];
 
 const randomStrings = (array) => {
@@ -57,9 +92,8 @@ const randomLinks = (description) => {
     }
     inks.push({
       src: `http://picsum.photos/300/200?r=${Math.random()}`,
-      description: generateData(description)
+      description: generateData(description),
     });
-
   }
   return inks;
 };
@@ -88,6 +122,6 @@ export const generatePoint = () => ({
   isFavorite: true,
   offer: {
     type: generateData(POINT_ROUTE_TYPES),
-    offers: randomOffers(OFFERS)
-  }
+    offers: randomOffers(OFFERS),
+  },
 });

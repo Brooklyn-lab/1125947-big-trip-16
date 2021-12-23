@@ -1,8 +1,13 @@
 import dayjs from 'dayjs';
-import { createElement } from '../render.js';
 
-const createMainTripPointTemplate = (point) => {
-  const { basePrice, dateFrom, dateTo, destination: { name }, offer: { type } } = point;
+export const createMainTripPointTemplate = (point) => {
+  const {
+    basePrice,
+    dateFrom,
+    dateTo,
+    destination: { name },
+    offer: { type },
+  } = point;
   const generateDate = (date) => dayjs(date).format('h:mm:ss A');
 
   return `<li class="trip-events__item">
@@ -44,27 +49,3 @@ const createMainTripPointTemplate = (point) => {
   </li>`;
 };
 
-export default class MainTripPointView {
-  #element = null;
-  #point = null;
-
-  constructor(point) {
-    this.#point = point;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  get template() {
-    return createMainTripPointTemplate(this.#point);
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
-}

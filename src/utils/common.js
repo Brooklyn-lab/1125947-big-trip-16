@@ -5,7 +5,5 @@ export const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export const generateData = (array) => {
-  const randomIndex = getRandomInteger(0, array.length - 1);
-  return array[randomIndex];
-};
+export const isEscPressed = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
