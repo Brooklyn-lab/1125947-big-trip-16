@@ -1,6 +1,10 @@
 import dayjs from 'dayjs';
 import { getRandomInteger } from '../utils/common.js';
-import { generateData } from '../utils/task.js';
+
+const generateData = (array) => {
+  const randomIndex = getRandomInteger(0, array.length - 1);
+  return array[randomIndex];
+};
 
 const generateDate = (max, min) => {
   const daysGap = getRandomInteger(min, max);

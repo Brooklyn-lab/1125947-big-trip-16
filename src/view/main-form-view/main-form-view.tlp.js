@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
-import AbstractView from './abstract-view';
 
-const createMainFormTemplate = (point) => {
+export const createMainFormTemplate = (point) => {
   const {
     basePrice,
     dateFrom,
@@ -168,36 +167,3 @@ const createMainFormTemplate = (point) => {
   </li>`;
 };
 
-
-export default class MainFormView extends AbstractView {
-  #point = null;
-
-  constructor(point) {
-    super();
-    this.#point = point;
-  }
-
-  get template() {
-    return createMainFormTemplate(this.#point);
-  }
-
-  setFormSubmitHandler = (callback) => {
-    this._callback.formSubmit = callback;
-    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
-  }
-
-  #formSubmitHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.formSubmit();
-  }
-
-  setEditClickHandler = (callback) => {
-    this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
-  }
-
-  #editClickHandler = (evt) => {
-    evt.preventDefault();
-    this._callback.editClick();
-  }
-}

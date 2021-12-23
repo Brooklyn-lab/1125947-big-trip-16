@@ -1,6 +1,4 @@
-import AbstractView from './abstract-view';
-
-const createHeaderInfoTemplate = () =>
+export const createHeaderInfoTemplate = () =>
   `<section class="trip-main__trip-info  trip-info">
       <div class="trip-info__main">
       <h1 class="trip-info__title">Amsterdam &mdash; Chamonix &mdash; Geneva</h1>
@@ -13,8 +11,3 @@ const createHeaderInfoTemplate = () =>
       </p>
   </section>`;
 
-export default class HeaderInfoView extends AbstractView {
-  get template() {
-    return createHeaderInfoTemplate();
-  }
-}

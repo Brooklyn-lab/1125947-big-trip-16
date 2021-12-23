@@ -1,11 +1,11 @@
-import HeaderInfoView from './view/header-info-view.js';
-import HeaderMenuView from './view/header-menu-view.js';
-import HeaderFiltersView from './view/header-filters-view.js';
-import MainSortFormView from './view/main-sort-form-view';
-import MainTripListView from './view/main-trip-list-view.js';
-import MainFormView from './view/main-form-view.js';
-import MainTripPointView from './view/main-trip-point-view.js';
-import NoPointView from './view/main-trip-no-point-view.js';
+import HeaderInfoView from './view/header-info-view/header-info-view.js';
+import HeaderMenuView from './view/header-menu-view/header-menu-view.js';
+import HeaderFiltersView from './view/header-filters-view/header-filters-view.js';
+import MainSortFormView from './view/main-sort-form-view/main-sort-form-view.js';
+import MainTripListView from './view/main-trip-list-view/main-trip-list-view.js';
+import MainFormView from './view/main-form-view/main-form-view.js';
+import MainTripPointView from './view/main-trip-point-view/main-trip-point-view.js';
+import NoPointView from './view/main-trip-no-point-view/main-trip-no-point-view.js';
 import { render, RenderPosition, replace } from './utils/render.js';
 import { generatePoint } from './mock/task.js';
 
