@@ -8,6 +8,7 @@ import MainTripPointView from './view/main-trip-point-view/main-trip-point-view.
 import NoPointView from './view/main-trip-no-point-view/main-trip-no-point-view.js';
 import { render, RenderPosition, replace } from './utils/render.js';
 import { generatePoint } from './mock/task.js';
+import { isEscPressed } from './utils/common.js';
 
 const headerMainElement = document.querySelector('.trip-main');
 const headerNavWrapper = headerMainElement.querySelector('.trip-controls__navigation');
@@ -35,7 +36,7 @@ const renderPoint = (pointListElement, task) => {
   };
 
   const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (isEscPressed(evt)) {
       evt.preventDefault();
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
