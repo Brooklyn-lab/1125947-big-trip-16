@@ -6,3 +6,4 @@ export const getRandomInteger = (a = 0, b = 1) => {
 };
 
 export const isEscPressed = (evt) => evt.key === 'Escape' || evt.key === 'Esc';
+
