@@ -10,15 +10,13 @@ const headerNavWrapper = headerMainElement.querySelector('.trip-controls__naviga
 const headerFiltersWrapper = headerMainElement.querySelector('.trip-controls__filters');
 const mainBodyElement = document.querySelector('.page-main');
 const mainSortTripElement = mainBodyElement.querySelector('.trip-events');
+const POINT_COUNT = 20;
+const points = Array.from({ length: POINT_COUNT }, generatePoint);
+const tripPresenter = new TripPresenter(mainSortTripElement);
 
 render(headerMainElement, new HeaderInfoView(), RenderPosition.AFTERBEGIN);
 render(headerNavWrapper, new HeaderMenuView(), RenderPosition.BEFOREEND);
 render(headerFiltersWrapper, new HeaderFiltersView(), RenderPosition.AFTERBEGIN);
-
-const POINT_COUNT = 20;
-const points = Array.from({ length: POINT_COUNT }, generatePoint);
-
-const tripPresenter = new TripPresenter(mainSortTripElement);
 
 tripPresenter.init(points);
 
