@@ -12,12 +12,9 @@ const mainBodyElement = document.querySelector('.page-main');
 const mainSortTripElement = mainBodyElement.querySelector('.trip-events');
 const POINT_COUNT = 20;
 const points = Array.from({ length: POINT_COUNT }, generatePoint);
-const tripPresenter = new TripPresenter(mainSortTripElement);
+new TripPresenter(mainSortTripElement, points);
 
 render(headerMainElement, new HeaderInfoView(), RenderPosition.AFTERBEGIN);
 render(headerNavWrapper, new HeaderMenuView(), RenderPosition.BEFOREEND);
 render(headerFiltersWrapper, new HeaderFiltersView(), RenderPosition.AFTERBEGIN);
-
-tripPresenter.init(points);
-
 
