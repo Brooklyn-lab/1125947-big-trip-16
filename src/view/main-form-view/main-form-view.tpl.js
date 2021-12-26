@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { generateDate } from '../../mock/task';
 
 export const createMainFormTemplate = (point) => {
   const {
@@ -36,8 +36,6 @@ export const createMainFormTemplate = (point) => {
         ${destinationImages}
       </section>`
       : ' ';
-
-  const generateDate = (date) => dayjs(date).format('MM/DD/YYYY h:mm');
 
   function offerTemplate() {
     const offer = offers.map((item) => (

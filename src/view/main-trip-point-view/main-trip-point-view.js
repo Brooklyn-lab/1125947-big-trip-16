@@ -1,5 +1,5 @@
 import AbstractView from '../abstract-view';
-import { createMainTripPointTemplate } from './main-trip-point-view.tlp';
+import { createMainTripPointTemplate } from './main-trip-point-view.tpl';
 
 export default class MainTripPointView extends AbstractView {
   #point = null;

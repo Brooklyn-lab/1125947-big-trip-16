@@ -1,4 +1,4 @@
-import dayjs from 'dayjs';
+import { generateDate } from '../../mock/task';
 
 export const createMainTripPointTemplate = (point) => {
   const {
@@ -9,8 +9,6 @@ export const createMainTripPointTemplate = (point) => {
     destination: { name },
     offer: { type },
   } = point;
-
-  const generateDate = (date) => dayjs(date).format('h:mm:ss A');
 
   const favoriteClassName = isFavorite
     ? 'event__favorite-btn event__favorite-btn--active'

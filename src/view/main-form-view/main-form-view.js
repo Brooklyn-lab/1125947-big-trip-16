@@ -1,5 +1,5 @@
 import AbstractView from '../abstract-view';
-import { createMainFormTemplate } from './main-form-view.tlp';
+import { createMainFormTemplate } from './main-form-view.tpl';
 
 export default class MainFormView extends AbstractView {
   #point = null;

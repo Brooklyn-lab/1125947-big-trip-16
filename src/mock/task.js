@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {nanoid} from 'nanoid';
+import { nanoid } from 'nanoid';
 import { getRandomInteger } from '../utils/common.js';
 
 const generateData = (array) => {
@@ -7,10 +7,10 @@ const generateData = (array) => {
   return array[randomIndex];
 };
 
-const generateDate = (max, min) => {
-  const daysGap = getRandomInteger(min, max);
-  return dayjs().add(daysGap, 'day').toDate();
-};
+const MAX_MINUTES_GAP = 2880;
+const getDate = () => dayjs().add(getRandomInteger(-MAX_MINUTES_GAP, MAX_MINUTES_GAP), 'minute');
+
+export const generateDate = (date) => dayjs(date).format('h:mm:ss A');
 
 const DESCRIPTION =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'.match(
@@ -111,19 +111,25 @@ const randomOffers = (offersArray) => {
   return offers;
 };
 
-export const generatePoint = () => ({
-  id: nanoid(),
-  basePrice: getRandomInteger(150, 1600),
-  dateFrom: generateDate(1, 2),
-  dateTo: generateDate(2, 4),
-  destination: {
-    description: randomStrings(DESCRIPTION),
-    name: generateData(POINTS_NAMES),
-    pictures: randomLinks(DESCRIPTION),
-  },
-  isFavorite: false,
-  offer: {
-    type: generateData(POINT_ROUTE_TYPES),
-    offers: randomOffers(OFFERS),
-  },
-});
+export const generatePoint = () => {
+  const dateOne = getDate();
+  const dateTwo = getDate();
+
+  return {
+    id: nanoid(),
+    basePrice: getRandomInteger(150, 450),
+    dateFrom: dayjs(Math.min(dateOne, dateTwo)).toDate(),
+    dateTo: dayjs(Math.max(dateOne, dateTwo)).toDate(),
+    destination: {
+      description: randomStrings(DESCRIPTION),
+      name: generateData(POINTS_NAMES),
+      pictures: randomLinks(DESCRIPTION),
+    },
+    isFavorite: false,
+    offer: {
+      type: generateData(POINT_ROUTE_TYPES),
+      offers: randomOffers(OFFERS),
+    },
+  };
+};
+
