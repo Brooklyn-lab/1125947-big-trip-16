@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 import { getRandomInteger } from '../utils/common.js';
 
 const generateData = (array) => {
@@ -111,6 +112,7 @@ const randomOffers = (offersArray) => {
 };
 
 export const generatePoint = () => ({
+  id: nanoid(),
   basePrice: getRandomInteger(150, 1600),
   dateFrom: generateDate(1, 2),
   dateTo: generateDate(2, 4),
@@ -119,7 +121,7 @@ export const generatePoint = () => ({
     name: generateData(POINTS_NAMES),
     pictures: randomLinks(DESCRIPTION),
   },
-  isFavorite: true,
+  isFavorite: false,
   offer: {
     type: generateData(POINT_ROUTE_TYPES),
     offers: randomOffers(OFFERS),
