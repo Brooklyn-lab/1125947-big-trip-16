@@ -12,10 +12,10 @@ export default class MainSortFormView extends AbstractView {
   }
 
   #sortTypeChangeHandler = (evt) => {
-    if (evt.target.tagName !== 'INPUT') {
+    if (!evt.target.classList.contains('trip-sort__input')) {
       return;
     }
-
+    
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 }

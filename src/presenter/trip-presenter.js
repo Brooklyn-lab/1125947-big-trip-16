@@ -25,11 +25,11 @@ export default class TripPresenter {
   constructor(tripContainer, points) {
     this.#tripContainer = tripContainer;
     this.#tripPoints = points.slice();
-    this.init(points);
+    this.init();
   }
 
-  init = (tripPoints) => {
-    this.#sourcedTripPoints = [...tripPoints];
+  init = () => {
+    this.#sourcedTripPoints = [...this.#tripPoints];
     render(this.#tripContainer, this.#tripListComponent, RenderPosition.BEFOREEND);
 
     this.#renderTrip();

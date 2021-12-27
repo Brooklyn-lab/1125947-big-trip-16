@@ -16,6 +16,7 @@ const DESCRIPTION =
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.'.match(
     /\S.*?\."?(?=\s|$)/g,
   );
+
 const POINT_ROUTE_TYPES = [
   'taxi',
   'bus',
@@ -27,6 +28,27 @@ const POINT_ROUTE_TYPES = [
   'sightseeing',
   'restaurant',
 ];
+
+// export const getRandomSignedFloat = () => (0.5 - Math.random());
+export const getOffers = (type) => {
+  const offersList = Offer.find((offer) => offer.type === type).offers;
+  return offersList.sort(() => (0.5 - Math.random())).slice(0, getRandomInteger(0, offersList.length));
+};
+
+const getTripEventType = () => TripEventType[Object.keys(TripEventType).sort(() => (0.5 - Math.random())).slice(0, 1)];
+
+export const TripEventType = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
+};
+
 const POINTS_NAMES = [
   'Nagasaki',
   'Frankfurt',
@@ -114,6 +136,7 @@ const randomOffers = (offersArray) => {
 export const generatePoint = () => {
   const dateOne = getDate();
   const dateTwo = getDate();
+  const type = getTripEventType();
 
   return {
     id: nanoid(),
@@ -127,7 +150,7 @@ export const generatePoint = () => {
     },
     isFavorite: false,
     offer: {
-      type: generateData(POINT_ROUTE_TYPES),
+      type: getTripEventType(type),
       offers: randomOffers(OFFERS),
     },
   };

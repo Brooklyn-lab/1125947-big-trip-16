@@ -1,16 +1,16 @@
 import AbstractView from '../abstract-view';
+import SmartView from '../smart-view';
 import { createMainFormTemplate } from './main-form-view.tpl';
+import { isPointRepeaing } from '../../utils/task';
 
-export default class MainFormView extends AbstractView {
-  #point = null;
-
+export default class MainFormView extends SmartView {
   constructor(point) {
     super();
-    this.#point = point;
+    this._data = MainFormView.parsePointToData(point);
   }
 
   get template() {
-    return createMainFormTemplate(this.#point);
+    return createMainFormTemplate(this._data);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -20,7 +20,7 @@ export default class MainFormView extends AbstractView {
 
   #formSubmitHandler = (evt) => {
     evt.preventDefault();
-    this._callback.formSubmit(this.#point);
+    this._callback.formSubmit(MainFormView.parseDataToPoint(this._data));
   }
 
   setEditClickHandler = (callback) => {
@@ -30,6 +30,23 @@ export default class MainFormView extends AbstractView {
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    this._callback.editClick(this.#point);
+    this._callback.editClick(this._data);
+  }
+
+  static parsePointToData = (point) => ({
+    ...point,
+    // isOffers: isPointRepeaing(point.offers),
+  });
+
+  static parseDataToPoint = (data) => {
+    const point = { ...data };
+
+    if (!point.isOffers) {
+      point.offers = null;
+    }
+
+    delete point.isOffers;
+
+    return point;
   }
 }
