@@ -1,16 +1,36 @@
-import AbstractView from '../abstract-view';
 import SmartView from '../smart-view';
 import { createMainFormTemplate } from './main-form-view.tpl';
-import { isPointRepeaing } from '../../utils/task';
 
 export default class MainFormView extends SmartView {
   constructor(point) {
     super();
     this._data = MainFormView.parsePointToData(point);
+
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
   }
 
   get template() {
     return createMainFormTemplate(this._data);
+  }
+
+  updateData = (update) => {
+    if(!update) {
+      return;
+    }
+
+    this._data = {...this._data, ...update};
+
+    this.updateElement();
+  }
+
+  updateElement = () => {
+    const prevElement = this.element;
+    const parent = prevElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.element;
+
+    parent.replaceChild(newElement, prevElement);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -33,20 +53,15 @@ export default class MainFormView extends SmartView {
     this._callback.editClick(this._data);
   }
 
-  static parsePointToData = (point) => ({
-    ...point,
-    // isOffers: isPointRepeaing(point.offers),
-  });
-
-  static parseDataToPoint = (data) => {
-    const point = { ...data };
-
-    if (!point.isOffers) {
-      point.offers = null;
-    }
-
-    delete point.isOffers;
-
-    return point;
+  #eventTypeChangeHandler = (evt) => {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+    });
   }
+
+  static parsePointToData = (point) => ({...point});
+  static parseDataToPoint = (data) => ({...data});
 }
+
+
