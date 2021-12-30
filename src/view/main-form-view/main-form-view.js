@@ -6,7 +6,7 @@ export default class MainFormView extends SmartView {
     super();
     this._data = MainFormView.parsePointToData(point);
 
-    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
+    this.#setInnerHandlers();
   }
 
   get template() {
@@ -31,6 +31,15 @@ export default class MainFormView extends SmartView {
     const newElement = this.element;
 
     parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    // пока не ясно куда засунуть обработчик по клику на стрелку, чтобы не сохранял данные
+    this.setEditClickHandler(this._callback.editClick);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -53,10 +62,16 @@ export default class MainFormView extends SmartView {
     this._callback.editClick(this._data);
   }
 
+  #setInnerHandlers = () => {
+    this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
+  }
+
   #eventTypeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      type: evt.target.value,
+      offer: {
+        type: evt.target.value,
+      }
     });
   }
 

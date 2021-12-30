@@ -6,8 +6,9 @@ export const createMainFormTemplate = (point) => {
     dateFrom,
     dateTo,
     destination: { name, description, pictures },
-    offer: { type, offers },
+    offer,
   } = point;
+
 
   function imageTemplate() {
     const images = pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`);
@@ -38,29 +39,33 @@ export const createMainFormTemplate = (point) => {
       : ' ';
 
   function offerTemplate() {
-    const offer = offers.map((item) => (
-      `<div class="event__offer-selector">
-        <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${item.id}" type="checkbox" name="event-offer-luggage" checked>
-          <label class="event__offer-label" for="event-offer-luggage-${item.id}">
-            <span class="event__offer-title">${item.title}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${item.price}</span>
-          </label>
-        </div>`)
-    );
+    if(offer.offers) {
+      const eventOffer = offer.offers.map(item => (
+        `<div class="event__offer-selector">
+          <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${item.id}" type="checkbox" name="event-offer-luggage" checked>
+            <label class="event__offer-label" for="event-offer-luggage-${item.id}">
+              <span class="event__offer-title">${item.title}</span>
+              &plus;&euro;&nbsp;
+              <span class="event__offer-price">${item.price}</span>
+            </label>
+          </div>`)
+      );
 
-    return `<div class="event__available-offers">
-          ${offer.join(' ')}
-        </div>`;
+      return `<div class="event__available-offers">
+            ${eventOffer.join('')}
+          </div>`; 
+    } else {
+      return ''
+    }
   }
+
+  const destinationOffers = offer !== undefined ? `${offerTemplate()}` : ' ';
 
   const getEventList = () => Object.values(TripEventType).map((tripEvent) =>
     `<div class="event__type-item">
       <input id="event-type-${tripEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEvent}">
       <label class="event__type-label  event__type-label--${tripEvent}" for="event-type-${tripEvent}-1">${tripEvent}</label>
     </div>`).join('');
-
-  const destinationOffers = offers !== undefined ? `${offerTemplate()}` : ' ';
 
   const dropdownCity = (citys) => citys.map((citysName) => `<option value='${citysName}'></option>`).join('');
 
@@ -70,7 +75,7 @@ export const createMainFormTemplate = (point) => {
           <div class="event__type-wrapper">
             <label class="event__type  event__type-btn" for="event-type-toggle-1">
               <span class="visually-hidden">Choose event type</span>
-              <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+              <img class="event__type-icon" width="17" height="17" src="img/icons/${offer.type}.png" alt="Event type icon">
             </label>
             <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -84,7 +89,7 @@ export const createMainFormTemplate = (point) => {
 
           <div class="event__field-group  event__field-group--destination">
               <label class="event__label  event__type-output" for="event-destination-1">
-              ${type}
+              ${offer.type}
               </label>
               <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${name}" list="destination-list-1">
               <datalist id="destination-list-1">

@@ -17,17 +17,6 @@ const DESCRIPTION =
     /\S.*?\."?(?=\s|$)/g,
   );
 
-export const TripEventType = {
-  TAXI: 'taxi',
-  BUS: 'bus',
-  TRAIN: 'train',
-  SHIP: 'ship',
-  DRIVE: 'drive',
-  FLIGHT: 'flight',
-  CHECK_IN: 'check-in',
-  SIGHTSEEING: 'sightseeing',
-  RESTAURANT: 'restaurant',
-};
 
 export const POINTS_NAMES = [
   'Nagasaki',
@@ -48,34 +37,132 @@ export const POINTS_NAMES = [
   'Sochi',
 ];
 
-const OFFERS = [
-  { title: 'Choose VIP area', price: 70, id: nanoid() },
-  { title: 'Choose live music', price: 150, id: nanoid() },
-  { title: 'Choose the time of check-out', price: 190, id: nanoid() },
-  { title: 'Add breakfast', price: 110, id: nanoid() },
-  { title: 'Order a meal from the restaurant', price: 30, id: nanoid() },
-  { title: 'Upgrade to a business class', price: 190, id: nanoid() },
-  { title: 'Choose temperature', price: 170, id: nanoid() },
-  { title: 'Drive quickly, I\'m in a hurry', price: 100, id: nanoid() },
-  { title: 'Drive slowly', price: 110, id: nanoid() },
-  { title: 'Choose the radio station', price: 30, id: nanoid() },
-  { title: 'With automatic transmission', price: 110, id: nanoid() },
-  { title: 'With air conditioning', price: 180, id: nanoid() },
-  { title: 'Choose meal', price: 130, id: nanoid() },
-  { title: 'Upgrade to business class', price: 150, id: nanoid() },
-  { title: 'Business lounge', price: 40, id: nanoid() },
-  { title: 'Infotainment system', price: 50, id: nanoid() },
-  { title: 'Order meal', price: 100, id: nanoid() },
-  { title: 'Choose seats', price: 190, id: nanoid() },
-  { title: 'Book a taxi at the arrival point', price: 110, id: nanoid() },
-  { title: 'Order a breakfast', price: 80, id: nanoid() },
-  { title: 'Wake up at a certain time', price: 140, id: nanoid() },
-  { title: 'Choose meal', price: 120, id: nanoid() },
-  { title: 'Upgrade to comfort class', price: 120, id: nanoid() },
-  { title: 'Business lounge', price: 160, id: nanoid() },
-];
+export const TripEventType = {
+  TAXI: 'taxi',
+  BUS: 'bus',
+  TRAIN: 'train',
+  SHIP: 'ship',
+  DRIVE: 'drive',
+  FLIGHT: 'flight',
+  CHECK_IN: 'check-in',
+  SIGHTSEEING: 'sightseeing',
+  RESTAURANT: 'restaurant',
+};
 
-const getTripEventType = () => TripEventType[Object.keys(TripEventType).sort(() => (0.5 - Math.random())).slice(0, 1)];
+const Offer = [
+  {
+    'type': 'taxi',
+    'offers': [
+      {
+        'id': 1,
+        'title': 'Upgrade to a business class',
+        'price': 120
+      },
+      {
+        'id': 2,
+        'title': 'Choose the radio station',
+        'price': 60
+      },
+      {
+        'id': 3,
+        'title': 'Drive quickly, I\'m in a hurry',
+        'price': 100
+      }
+    ]
+  },
+  {
+    'type': 'bus',
+    'offers': [
+      {
+        'id': 4,
+        'title': 'Upgrade to a business class',
+        'price': 100
+      }, {
+        'id': 5,
+        'title': 'Choose the radio station',
+        'price': 10
+      }
+    ]
+  },
+  {
+    'type': 'ship',
+    'offers': [
+      {
+        'id': 6,
+        'title': 'Add meal',
+        'price': 20
+      }, {
+        'id': 7,
+        'title': 'Choose seats',
+        'price': 15
+      }, {
+        'id': 8,
+        'title': 'Upgrade to a business class',
+        'price': 100
+      }
+    ]
+  },
+  {
+    'type': 'restaurant',
+    'offers': [
+      {
+        'id': 9,
+        'title': 'Choose VIP area',
+        'price': 70
+      },
+      { 
+        'id': 10,
+        'title': 'Choose live music',
+        'price': 150
+      }
+    ]
+  },
+  {
+    'type': 'train',
+    'offers': [
+      {
+        'id': 11,
+        'title': 'Add breakfast',
+        'price': 110 
+      },
+      {
+        'id': 12,
+        'title': 'Order a meal from the restaurant',
+        'price': 30 
+      },
+    ]
+  },
+  {
+    'type': 'drive',
+    'offers': [
+      {
+        'id': 13,
+        'title': 'Choose the time of check-out',
+        'price': 190
+      }
+    ]
+  },
+  {
+    'type': 'flight',
+    'offers': [
+      {
+        'id': 14,
+        'title': 'Order meal',
+        'price': 100
+      }
+    ]
+  },
+  {
+    'type': 'check-in'
+  },
+  {
+    'type': 'sightseeing'
+  }
+]
+
+export const test = (value) => {
+  console.log(value);
+}
 
 const randomStrings = (array) => {
   const strings = [];
@@ -103,22 +190,9 @@ const randomLinks = (description) => {
   return inks;
 };
 
-const randomOffers = (offersArray) => {
-  const offers = [];
-  for (let i = 0; i <= 5; i++) {
-    if (i >= getRandomInteger(0, 5)) {
-      break;
-    }
-    const randomIndex = getRandomInteger(0, offersArray.length - 1);
-    offers.push(offersArray[randomIndex]);
-  }
-  return offers;
-};
-
 export const generatePoint = () => {
   const dateOne = getDate();
   const dateTwo = getDate();
-  const type = getTripEventType();
 
   return {
     id: nanoid(),
@@ -131,10 +205,7 @@ export const generatePoint = () => {
       pictures: randomLinks(DESCRIPTION),
     },
     isFavorite: false,
-    offer: {
-      type: getTripEventType(type),
-      offers: randomOffers(OFFERS),
-    },
+    offer: generateData(Offer),
   };
 };
 
