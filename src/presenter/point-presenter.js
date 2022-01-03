@@ -19,7 +19,7 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.DEFAULT
 
-  constructor (pointListContainer, changeData, changeMode) {
+  constructor(pointListContainer, changeData, changeMode) {
     this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
@@ -36,8 +36,8 @@ export default class PointPresenter {
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
-    this.#pointEditComponent.setEditClickHandler(this.#handleFormSubmit);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setEditClickHandler(this.#handleFormSubmit);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointListContainer, this.#pointComponent, RenderPosition.BEFOREEND);
@@ -69,7 +69,7 @@ export default class PointPresenter {
 
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
-    document.addEventListener('keydown', this.#escKeyDownHandler);
+    // document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#changeMode();
     this.#mode = Mode.EDITING;
   };
@@ -83,16 +83,24 @@ export default class PointPresenter {
   #escKeyDownHandler = (evt) => {
     if (isEscPressed(evt)) {
       evt.preventDefault();
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   };
 
   #handleEditClick = () => {
-    this.#replacePointToForm();
+    // this.#replacePointToForm();
+    if (this.#mode === Mode.DEFAULT) {
+      this.#replacePointToForm();
+      document.addEventListener('keydown', this.#escKeyDownHandler);
+    } else {
+      this.#pointEditComponent.reset(this.#point);
+      this.#replaceFormToPoint();
+    }
   }
 
   #handleFavoriteClick = () => {
-    this.#changeData({...this.#point, isFavorite: !this.#point.isFavorite});
+    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
   }
 
   #handleFormSubmit = (point) => {
