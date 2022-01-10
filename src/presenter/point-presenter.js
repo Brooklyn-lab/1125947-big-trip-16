@@ -2,6 +2,7 @@ import MainTripPointView from '../view/main-trip-point-view/main-trip-point-view
 import MainFormView from '../view/main-form-view/main-form-view.js';
 import { isEscPressed } from '../utils/common.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
+import { UserAction, UpdateType } from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -37,7 +38,8 @@ export default class PointPresenter {
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#pointEditComponent.setEditClickHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setEditClickHandler(this.#handleEditClick);
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointListContainer, this.#pointComponent, RenderPosition.BEFOREEND);
@@ -63,13 +65,13 @@ export default class PointPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToPoint();
     }
   }
 
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
-    // document.addEventListener('keydown', this.#escKeyDownHandler);
     this.#changeMode();
     this.#mode = Mode.EDITING;
   };
@@ -89,7 +91,6 @@ export default class PointPresenter {
   };
 
   #handleEditClick = () => {
-    // this.#replacePointToForm();
     if (this.#mode === Mode.DEFAULT) {
       this.#replacePointToForm();
       document.addEventListener('keydown', this.#escKeyDownHandler);
@@ -99,12 +100,28 @@ export default class PointPresenter {
     }
   }
 
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MINOR,
+      point
+    );
+  }
+
   #handleFavoriteClick = () => {
-    this.#changeData({ ...this.#point, isFavorite: !this.#point.isFavorite });
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      { ...this.#point, isFavorite: !this.#point.isFavorite }
+    );
   }
 
   #handleFormSubmit = (point) => {
-    this.#changeData(point);
+    this.#changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.PATCH,
+      {...point}
+    );
     this.#replaceFormToPoint();
   }
 }

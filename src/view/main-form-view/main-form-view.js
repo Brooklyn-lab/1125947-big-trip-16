@@ -1,7 +1,7 @@
 import SmartView from '../smart-view';
 import { createMainFormTemplate } from './main-form-view.tpl';
 import flatpickr from 'flatpickr';
-import { getOffer, randomLinks, randomStrings, DESCRIPTION } from '../../mock/task';
+import { getOffer, randomLinks, randomStrings, DESCRIPTION, getDestinationName } from '../../mock/task';
 
 import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
 
@@ -40,12 +40,16 @@ export default class MainFormView extends SmartView {
     );
   }
 
-  updateData = (update) => {
+  updateData = (update, justDataUpdating) => {
     if (!update) {
       return;
     }
 
     this._data = { ...this._data, ...update };
+
+    if (justDataUpdating) {
+      return;
+    }
 
     this.updateElement();
   }
@@ -67,6 +71,7 @@ export default class MainFormView extends SmartView {
     this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   }
 
   setFormSubmitHandler = (callback) => {
@@ -86,8 +91,17 @@ export default class MainFormView extends SmartView {
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    // если в editClick() добавить this._data, то при закрытии формы стрелкой, будет сохраняться и обновляться точка. Без нее, не работает стрелка, так как аргументом прилетает при клике undefined
     this._callback.editClick();
+  }
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  }
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(MainFormView.parseDataToPoint(this._data));
   }
 
   #setDatepicker = () => {
@@ -125,8 +139,7 @@ export default class MainFormView extends SmartView {
 
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
-    // если ставить evt = change, то не отрабатывает с первого раза Save, так как change ожидает сперва снятие фокуса. Если ставить input, то почему-то слетает фокус после каждого символа
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
   }
 
@@ -139,20 +152,34 @@ export default class MainFormView extends SmartView {
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    this.updateData({
-      basePrice: evt.target.value,
-    });
+    const priceInputElement = this.element.querySelector('.event__input--price');
+
+    if (evt.target.value !== '') {
+      priceInputElement.setCustomValidity('');
+      this.updateData({
+        basePrice: evt.target.value,
+      }, true);
+    } else {
+      priceInputElement.setCustomValidity('Enter price');
+    }
   }
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
-    this.updateData({
-      destination: {
-        name: evt.target.value,
-        description: randomStrings(DESCRIPTION),
-        pictures: randomLinks(DESCRIPTION),
-      }
-    });
+    const destination = getDestinationName(evt.target.value);
+    const destinationInputElement = this.element.querySelector('.event__input--destination');
+
+    if (destination) {
+      this.updateData({
+        destination: {
+          name: evt.target.value,
+          description: randomStrings(DESCRIPTION),
+          pictures: randomLinks(DESCRIPTION),
+        }
+      });
+    } else {
+      destinationInputElement.setCustomValidity('Choose name from list');
+    }
   }
 
   static parsePointToData = (point) => ({ ...point });

@@ -101,6 +101,7 @@ export const createMainFormTemplate = (point) => {
   );
 
   const timeTemplate = createTripEditTimeTemplate(dateFrom, dateTo);
+  const isSubmitDisabled = (dateFrom > dateTo);
 
   return `<li class="trip-events__item">
       <form class="event event--edit" action="#" method="post">
@@ -146,7 +147,7 @@ export const createMainFormTemplate = (point) => {
               value="${basePrice}"
             />
           </div>
-          <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+          <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? 'disabled' : ''}>Save</button>
           <button class="event__reset-btn" type="reset">Delete</button>
           <button class="event__rollup-btn" type="button">
                 <span class="visually-hidden">Open event</span>

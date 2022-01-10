@@ -160,13 +160,17 @@ export const randomLinks = (description) => {
 
 export const getOffer = (value) => OFFERS.find((elem) => elem.type === value);
 
+export const getDestinationName = (value) => POINTS_NAMES.find((elem) => elem === value);
+
+const roundNum = (val) => Math.round(val / 10) * 10;
+
 export const generatePoint = () => {
   const dateOne = getDate();
   const dateTwo = getDate();
 
   return {
     id: nanoid(),
-    basePrice: getRandomInteger(150, 450),
+    basePrice: roundNum(getRandomInteger(150, 450)),
     dateFrom: dayjs(Math.min(dateOne, dateTwo)).toDate(),
     dateTo: dayjs(Math.max(dateOne, dateTwo)).toDate(),
     destination: {
