@@ -1,9 +1,19 @@
 import SmartView from '../smart-view';
 import { createMainFormTemplate } from './main-form-view.tpl';
 import flatpickr from 'flatpickr';
+// import dayjs from 'dayjs';
 import { getOffer, randomLinks, randomStrings, DESCRIPTION, getDestinationName } from '../../mock/task';
-
 import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
+
+// const EMPTY_POINT = {
+//   id: null,
+//   basePrice: 0,
+//   dateFrom: dayjs().toDate(),
+//   dateTo: dayjs().toDate(),
+//   destination: {},
+//   isFavorite: false,
+//   offer: 0,
+// };
 
 export default class MainFormView extends SmartView {
   #dateFromPicker = null;

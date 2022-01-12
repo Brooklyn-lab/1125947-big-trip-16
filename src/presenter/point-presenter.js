@@ -32,8 +32,8 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new MainTripPointView(point);
-    this.#pointEditComponent = new MainFormView(point);
+    this.#pointComponent = new MainTripPointView(this.#point);
+    this.#pointEditComponent = new MainFormView(this.#point);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
@@ -120,10 +120,9 @@ export default class PointPresenter {
     this.#changeData(
       UserAction.UPDATE_POINT,
       UpdateType.PATCH,
-      {...point}
+      { ...point }
     );
     this.#replaceFormToPoint();
   }
 }
-
 
