@@ -1,26 +1,16 @@
-import { calculateDateDiff } from '../../utils/common.js';
-import { DAY_TIME_FORMAT } from '../../const.js';
-import { DAY_FORMAT } from '../../const.js';
-import { formatDate } from '../../utils/common.js';
-import { TIME_FORMAT } from '../../const.js';
+import { calculateDateDiff, formatDate } from '../../utils/common.js';
+import { DAY_TIME_FORMAT, TIME_FORMAT, DAY_FORMAT } from '../../const.js';
 
 export const createMainTripPointTemplate = (point) => {
-  const {
-    basePrice,
-    dateFrom,
-    dateTo,
-    isFavorite,
-    destination: { name },
-    offer,
-  } = point;
+  const { basePrice, dateFrom, dateTo, isFavorite, destination, offers, type } = point;
 
   return `<li class="trip-events__item">
       <div class="event">
       <time class="event__date" datetime="${formatDate(dateFrom, DAY_TIME_FORMAT)}">${formatDate(dateFrom, DAY_FORMAT)}</time>
       <div class="event__type">
-        <img class="event__type-icon" width="42" height="42" src="img/icons/${offer.type}.png" alt="Event type icon">
+        <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${offer.type} ${name}</h3>
+      <h3 class="event__title">${type} ${destination.name}</h3>
       <div class="event__schedule">
         <p class="event__time">
             <time class="event__start-time" datetime="${formatDate(dateFrom, DAY_TIME_FORMAT)}">${formatDate(dateFrom, TIME_FORMAT)}</time>
@@ -34,7 +24,7 @@ export const createMainTripPointTemplate = (point) => {
       </p>
       <h4 class="visually-hidden">Offers:</h4>
       <ul class="event__selected-offers">
-        ${offer.offers !== undefined ? offer.offers.map(({ title, price }) => `<li class="event__offer">
+        ${offers !== undefined ? offers.map(({ title, price }) => `<li class="event__offer">
           <span class="event__offer-title">${title}</span>
           &plus;&euro;&nbsp;
           <span class="event__offer-price">${price}</span>

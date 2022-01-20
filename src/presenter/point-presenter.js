@@ -9,6 +9,12 @@ const Mode = {
   EDITING: 'EDITING',
 };
 
+export const State = {
+  SAVING: 'SAVING',
+  DELETING: 'DELETING',
+  ABORTING: 'ABORTING'
+};
+
 export default class PointPresenter {
   #pointListContainer = null;
   #changeData = null;
@@ -52,6 +58,7 @@ export default class PointPresenter {
 
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -70,8 +77,42 @@ export default class PointPresenter {
     }
   }
 
+  setViewState = (state) => {
+    if (this.#mode === Mode.DEFAULT) {
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateData({
+        isDisabled: false, 
+        isSaving: false, 
+        isDeleting: false
+      });
+    };
+
+    switch (state) {
+      case State.SAVING:
+        this.#pointEditComponent.updateData({
+          isDisabled: true, 
+          isSaving: true, 
+        });
+        break;
+      case State.DELETING:
+        this.#pointEditComponent.updateData({
+          isDisabled: true, 
+          isSaving: true, 
+        });
+        break;
+      case State.ABORTING:
+        this.#pointComponent.shake(resetFormState);
+        this.#pointEditComponent.shake(resetFormState);
+        break;
+    }
+  }
+
   #replacePointToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
+    document.removeEventListener('keydown', this.#escKeyDownHandler);
     this.#changeMode();
     this.#mode = Mode.EDITING;
   };
@@ -100,11 +141,11 @@ export default class PointPresenter {
     }
   }
 
-  #handleDeleteClick = (point) => {
+  #handleDeleteClick = () => {
     this.#changeData(
       UserAction.DELETE_POINT,
       UpdateType.MINOR,
-      point
+      this.#point
     );
   }
 
@@ -117,12 +158,20 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (point) => {
+    const isMinorChange = 
+      point.dateFrom !== this.#point.dateFrom || 
+      point.dateTo !== this.#point.dateTo ||
+      point.basePrice !== this.#point.basePrice;
+    
+    const updateType = isMinorChange ? UpdateType.MINOR : UpdateType.PATCH;
+
     this.#changeData(
       UserAction.UPDATE_POINT,
-      UpdateType.PATCH,
-      { ...point }
+      updateType,
+      point
     );
-    this.#replaceFormToPoint();
+
+    // this.#replaceFormToPoint();
   }
 }
 

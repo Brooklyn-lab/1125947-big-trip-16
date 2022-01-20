@@ -1,14 +1,13 @@
 import MainSortFormView from '../view/main-sort-form-view/main-sort-form-view.js';
 import MainTripListView from '../view/main-trip-list-view/main-trip-list-view.js';
 import NoPointView from '../view/main-trip-no-point-view/main-trip-no-point-view.js';
+import LoadingView from '../view/loading-view/loading-view.js';
 import { remove, render, RenderPosition } from '../utils/render.js';
-import PointPresenter from './point-presenter.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
-import { sortPointPrice, sortPointTime } from '../utils/task.js';
-import { filter } from '../utils/filter.js';
+import PointPresenter, {State as PointPresenterViewState} from './point-presenter.js';
 import PointNewPresenter from './point-new-presenter.js';
-
-const TRIP_POINT_COUNT = 4;
+import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
+import { sortPointPrice, sortPointTime, sortPointDate } from '../utils/common.js';
+import { filter } from '../utils/filter.js';
 
 export default class TripPresenter {
   #tripContainer = null;
@@ -16,14 +15,15 @@ export default class TripPresenter {
   #filterModel = null;
 
   #tripListComponent = new MainTripListView();
+  #loadingComponent = new LoadingView();
   #noTripComponent = null;
   #sortComponent = null;
 
-  #renderPointCount = TRIP_POINT_COUNT;
   #pointPresenter = new Map();
   #pointNewPresenter = null;
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.EVERYTHING;
+  #isLoading = true;
 
   constructor(tripContainer, pointsModel, filterModel) {
     this.#tripContainer = tripContainer;
@@ -43,9 +43,11 @@ export default class TripPresenter {
 
     switch (this.#currentSortType) {
       case SortType.TIME:
-        return filteredPoints.sort(sortPointTime);
+        return [...filteredPoints].sort(sortPointTime);
       case SortType.PRICE:
-        return filteredPoints.sort(sortPointPrice);
+        return [...filteredPoints].sort(sortPointPrice);
+      case SortType.DEFAULT:
+        return [...filteredPoints].sort(sortPointDate);
     }
 
     return filteredPoints;
@@ -53,7 +55,6 @@ export default class TripPresenter {
 
   init = () => {
     render(this.#tripContainer, this.#tripListComponent, RenderPosition.BEFOREEND);
-
     this.#renderTrip();
   }
 
@@ -68,16 +69,31 @@ export default class TripPresenter {
     this.#pointPresenter.forEach((presenter) => presenter.resetView());
   }
 
-  #handleViewAction = (actionType, updateType, update) => {
+  #handleViewAction = async (actionType, updateType, update) => {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this.#pointsModel.updatePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.SAVING);
+        try {
+          await this.#pointsModel.updatePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.ABORTING);
+        }
         break;
       case UserAction.ADD_POINT:
-        this.#pointsModel.addPoint(updateType, update);
+        this.#pointNewPresenter.setSaving();
+        try {
+          await this.#pointsModel.addPoint(updateType, update);
+        } catch (err) {
+          this.#pointNewPresenter.setAborting();
+        }
         break;
       case UserAction.DELETE_POINT:
-        this.#pointsModel.deletePoint(updateType, update);
+        this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.DELETING);
+        try {
+          await this.#pointsModel.deletePoint(updateType, update);
+        } catch (err) {
+          this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.ABORTING);
+        }
         break;
     }
   }
@@ -89,11 +105,16 @@ export default class TripPresenter {
         break;
       case UpdateType.MINOR:
         this.#clearTripList();
-        this.#renderTrip(this.points);
+        this.#renderTrip();
         break;
       case UpdateType.MAJOR:
-        this.#clearTripList({ resetRenderTaskCount: true, resetSortType: true });
-        this.#renderTrip(this.points);
+        this.#clearTripList({ resetSortType: true });
+        this.#renderTrip();
+        break;
+      case UpdateType.INIT:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#renderTrip();
         break;
     }
   }
@@ -104,7 +125,7 @@ export default class TripPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearTripList({ resetRenderTaskCount: true });
+    this.#clearTripList();
     this.#renderTrip(this.points);
   }
 
@@ -121,8 +142,12 @@ export default class TripPresenter {
     this.#pointPresenter.set(point.id, pointPresenter);
   }
 
-  #renderPoints = (points) => {
-    points.forEach((point) => this.#renderPoint(point));
+  #renderPoints = () => {
+    this.points.forEach((point) => this.#renderPoint(point));
+  }
+
+  #renderLoading = () => {
+    render(this.#tripContainer, this.#loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   #renderNoPoints = () => {
@@ -130,24 +155,18 @@ export default class TripPresenter {
     render(this.#tripContainer, this.#noTripComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #clearTripList = ({ resetRenderTaskCount = false, resetSortType = false } = {}) => {
-    const pointCount = this.points.length;
+  #clearTripList = ({ resetSortType = false } = {}) => {
 
     this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();
 
     remove(this.#sortComponent);
+    remove(this.#loadingComponent);
     remove(this.#noTripComponent);
 
     if (this.#noTripComponent) {
       remove(this.#noTripComponent);
-    }
-
-    if (resetRenderTaskCount) {
-      this.#renderPointCount = TRIP_POINT_COUNT;
-    } else {
-      this.#renderPointCount = Math.min(pointCount, this.#renderPointCount);
     }
 
     if (resetSortType) {
@@ -156,16 +175,18 @@ export default class TripPresenter {
   }
 
   #renderTrip = () => {
-    const points = this.points;
-    const pointCount = points.length;
+    if (this.#isLoading) {
+      this.#renderLoading();
+      return;
+    } 
 
-    if (pointCount === 0) {
+    if (!this.points.length) {
       this.#renderNoPoints();
       return;
     }
 
     this.#renderSort();
-    this.#renderPoints(points.slice(0, Math.min(pointCount, this.#renderPointCount)));
+    this.#renderPoints();
   }
 }
 

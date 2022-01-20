@@ -1,12 +1,15 @@
 import HeaderInfoView from './view/header-info-view/header-info-view.js';
 import HeaderMenuView from './view/header-menu-view/header-menu-view.js';
-import HeaderFiltersView from './view/header-filters-view/header-filters-view.js';
 import { render, RenderPosition } from './utils/render.js';
-import { generatePoint } from './mock/task.js';
 import TripPresenter from './presenter/trip-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
-import FilterPresenter from './presenter/filter-presenter.js';
+import ApiService from './service/api-service.js';
+import { MenuItem } from './const.js';
+
+const AUTHORIZATION = 'Basic klj893dahk34afts';
+const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 const headerMainElement = document.querySelector('.trip-main');
 const headerNavWrapper = headerMainElement.querySelector('.trip-controls__navigation');
@@ -14,25 +17,32 @@ const headerFiltersWrapper = headerMainElement.querySelector('.trip-controls__fi
 const mainBodyElement = document.querySelector('.page-main');
 const mainTripElement = mainBodyElement.querySelector('.trip-events');
 
-const POINT_COUNT = 20;
-const points = Array.from({ length: POINT_COUNT }, generatePoint);
-
-const pointsModel = new PointModel();
+const pointsModel = new PointModel(new ApiService(END_POINT, AUTHORIZATION));
 const filterModel = new FilterModel();
-pointsModel.points = points;
+const headerMenuComponent = new HeaderMenuView();
 const tripPresenter = new TripPresenter(mainTripElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(headerFiltersWrapper, filterModel, pointsModel);
 
-render(headerMainElement, new HeaderInfoView(), RenderPosition.AFTERBEGIN);
-render(headerNavWrapper, new HeaderMenuView(), RenderPosition.BEFOREEND);
-render(headerFiltersWrapper, new HeaderFiltersView(), RenderPosition.AFTERBEGIN);
+const handleSiteMenuClick = (menuItem) => {
+  switch (menuItem) {
+    case MenuItem.STATS:
+      break;
+    case MenuItem.TABLE:
+      break;
+  }
+}
+
+headerMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
 tripPresenter.init();
-// new TripPresenter(mainTripElement, pointsModel, filterModel);
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter.createPoint();
 });
 
+pointsModel.init().finally(() => {
+  render(headerMainElement, new HeaderInfoView(), RenderPosition.AFTERBEGIN);
+  render(headerNavWrapper, headerMenuComponent, RenderPosition.BEFOREEND);
+});

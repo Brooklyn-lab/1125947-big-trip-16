@@ -17,12 +17,18 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
-  MAJOR: 'MAJOR'
+  MAJOR: 'MAJOR',
+  INIT: 'INIT'
 };
 
 export const FilterType = {
   EVERYTHING: 'everything',
   FUTURE: 'future',
-  PAST: 'past',
+  PAST: 'past'
+};
+
+export const MenuItem = {
+  TABLE: 'Table',
+  STATS: 'Stats'
 };
 

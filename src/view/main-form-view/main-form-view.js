@@ -1,9 +1,8 @@
 import SmartView from '../smart-view';
 import { createMainFormTemplate } from './main-form-view.tpl';
 import flatpickr from 'flatpickr';
-// import dayjs from 'dayjs';
-import { getOffer, randomLinks, randomStrings, DESCRIPTION, getDestinationName } from '../../mock/task';
-import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
+import 'flatpickr/dist/flatpickr.min.css';
 
 // const EMPTY_POINT = {
 //   id: null,
@@ -23,7 +22,8 @@ export default class MainFormView extends SmartView {
     super();
     this._data = MainFormView.parsePointToData(point);
     this.#setInnerHandlers();
-    this.#setDatepicker();
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
 
   get template() {
@@ -32,16 +32,6 @@ export default class MainFormView extends SmartView {
 
   removeElement = () => {
     super.removeElement();
-
-    if (this.#dateFromPicker) {
-      this.#dateFromPicker.destroy();
-      this.#dateFromPicker = null;
-    }
-
-    if (this.#dateToPicker) {
-      this.#dateToPicker.destroy();
-      this.#dateToPicker = null;
-    }
   }
 
   reset = (point) => {
@@ -50,38 +40,13 @@ export default class MainFormView extends SmartView {
     );
   }
 
-  updateData = (update, justDataUpdating) => {
-    if (!update) {
-      return;
-    }
-
-    this._data = { ...this._data, ...update };
-
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
-  }
-
-  updateElement = () => {
-    const prevElement = this.element;
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.element;
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
-  }
-
   restoreHandlers = () => {
     this.#setInnerHandlers();
-    this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
     this.setDeleteClickHandler(this._callback.deleteClick);
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
 
   setFormSubmitHandler = (callback) => {
@@ -114,25 +79,39 @@ export default class MainFormView extends SmartView {
     this._callback.deleteClick(MainFormView.parseDataToPoint(this._data));
   }
 
-  #setDatepicker = () => {
+
+  #setDateFromPicker = () => {
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
     this.#dateFromPicker = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
+      this.element.querySelector('input[name=event-start-time]'),
       {
-        enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateFrom,
+        ['time_24hr']: true,
+        enableTime: true,
+        defaultDate: dayjs(this._data.dateFrom).toISOString(),
         onChange: this.#dateFromChangeHandler,
       }
-    );
+    )
+  }
+
+  #setDateToPicker = () => {
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
     this.#dateToPicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
+      this.element.querySelector('input[name=event-end-time]'),
       {
-        enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateTo,
+        ['time_24hr']: true,
+        enableTime: true,
+        defaultDate: dayjs(this._data.dateTo).toISOString(),
         onChange: this.#dateToChangeHandler,
       }
-    );
+    )
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -151,12 +130,13 @@ export default class MainFormView extends SmartView {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
     this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
   }
 
   #eventTypeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      offer: getOffer(evt.target.value)
+      type: evt.target.value
     });
   }
 
@@ -167,7 +147,7 @@ export default class MainFormView extends SmartView {
     if (evt.target.value !== '') {
       priceInputElement.setCustomValidity('');
       this.updateData({
-        basePrice: evt.target.value,
+        basePrice: Number(evt.target.value)
       }, true);
     } else {
       priceInputElement.setCustomValidity('Enter price');
@@ -176,15 +156,14 @@ export default class MainFormView extends SmartView {
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
-    const destination = getDestinationName(evt.target.value);
     const destinationInputElement = this.element.querySelector('.event__input--destination');
 
-    if (destination) {
+    if ('') {
       this.updateData({
         destination: {
-          name: evt.target.value,
-          description: randomStrings(DESCRIPTION),
-          pictures: randomLinks(DESCRIPTION),
+          name: newDestination.name,
+          description: newDestination.description,
+          pictures: newDestination.pictures,
         }
       });
     } else {
@@ -192,7 +171,36 @@ export default class MainFormView extends SmartView {
     }
   }
 
-  static parsePointToData = (point) => ({ ...point });
-  static parseDataToPoint = (data) => ({ ...data });
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+
+    const checkedOffersValues = checkedOffers.map((offer) => ({
+      id: Number(offer.dataset.id),
+      title: offer.dataset.title,
+      price: Number(offer.dataset.price),
+    }));
+
+    this.updateData({
+      offers: checkedOffersValues,
+    }, true);
+  }
+
+  static parsePointToData = (point) => ({ ...point,
+    isDisabled: false, 
+    isSaving: false, 
+    isDeleting: false
+  });
+  
+  static parseDataToPoint = (data) => { 
+    const point = {...data};
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+  };
 }
 
