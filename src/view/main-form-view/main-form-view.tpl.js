@@ -2,73 +2,73 @@ import { TRIP_EVENT_TYPE, POINTS_NAMES } from '../../utils/task';
 import { formatDate } from '../../utils/common';
 import { DAY_TIME_FORMAT } from '../../const';
 
-  const imageTemplate = (pictures) => {
-    const images = pictures.map((picture) => (
-      `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
-    )).join(' ');
+const imageTemplate = (pictures) => {
+  const images = pictures.map((picture) => (
+    `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
+  )).join(' ');
 
-    return `
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${images}
-        </div>
+  return `
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${images}
       </div>
-    `;
-  }
+    </div>
+  `;
+};
 
-  // function offerTemplate() {
-  //   if (offers) {
-  //     const eventOffer = offers.map((offer) => (
-  //       `<div class="event__offer-selector">
-  //         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offer.id}" type="checkbox" name="event-offer-luggage" checked>
-  //           <label class="event__offer-label" for="event-offer-luggage-${offer.id}">
-  //             <span class="event__offer-title">${offer.title}</span>
-  //             &plus;&euro;&nbsp;
-  //             <span class="event__offer-price">${offer.price}</span>
-  //           </label>
-  //         </div>`)
-  //     );
+// function offerTemplate() {
+//   if (offers) {
+//     const eventOffer = offers.map((offer) => (
+//       `<div class="event__offer-selector">
+//         <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offer.id}" type="checkbox" name="event-offer-luggage" checked>
+//           <label class="event__offer-label" for="event-offer-luggage-${offer.id}">
+//             <span class="event__offer-title">${offer.title}</span>
+//             &plus;&euro;&nbsp;
+//             <span class="event__offer-price">${offer.price}</span>
+//           </label>
+//         </div>`)
+//     );
 
-  //     return `<div class="event__available-offers">
-  //           ${eventOffer.join('')}
-  //         </div>`;
-  //   } else {
-  //     return '';
-  //   }
-  // }
+//     return `<div class="event__available-offers">
+//           ${eventOffer.join('')}
+//         </div>`;
+//   } else {
+//     return '';
+//   }
+// }
 
-  // const destinationOffers = offers !== undefined ? `${offerTemplate()}` : ' ';
+// const destinationOffers = offers !== undefined ? `${offerTemplate()}` : ' ';
 
-  const offerTemplate = (offer) => (
-    `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offer.id}" type="checkbox" name="event-offer-luggage" data-id="${offer.id}" data-title="${offer.title}" data-price="${offer.price}">
-        <label class="event__offer-label" for="event-offer-luggage-${offer.id}">
-          <span class="event__offer-title">${offer.title}</span>
-          &plus;&euro;&nbsp;
-          <span class="event__offer-price">${offer.price}</span>
-        </label>
-      </div>`
-  );
-
-  const destinationOffers = (offers) => offers.map((offer) => offerTemplate(offer)).join('');
-
-  const getEventList = (array) => array.map((tripEvent) =>
-    `<div class="event__type-item">
-      <input id="event-type-${tripEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEvent}">
-      <label class="event__type-label  event__type-label--${tripEvent}" for="event-type-${tripEvent}-1">${tripEvent}</label>
-    </div>`).join('');
-
-  const dropdownCity = (citys) => citys.map((citysName) => `<option value='${citysName}'></option>`).join('');
-
-  const createTripEditTimeTemplate = (id, dateFromValue, dateToValue, isDisabled) => (`
-    <div class="event__field-group  event__field-group--time">
-      <label class="visually-hidden" for="event-start-time-${id}">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${formatDate(dateFromValue, DAY_TIME_FORMAT)}" ${isDisabled ? 'disabled' : ''}>
-      &mdash;
-      <label class="visually-hidden" for="event-end-time-${id}">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${formatDate(dateToValue, DAY_TIME_FORMAT)}" ${isDisabled ? 'disabled' : ''}>
+const offerTemplate = (offer) => (
+  `<div class="event__offer-selector">
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${offer.id}" type="checkbox" name="event-offer-luggage" data-id="${offer.id}" data-title="${offer.title}" data-price="${offer.price}">
+      <label class="event__offer-label" for="event-offer-luggage-${offer.id}">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
     </div>`
-  );  
+);
+
+const destinationOffers = (offers) => offers.map((offer) => offerTemplate(offer)).join('');
+
+const getEventList = (array) => array.map((tripEvent) =>
+  `<div class="event__type-item">
+    <input id="event-type-${tripEvent}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${tripEvent}">
+    <label class="event__type-label  event__type-label--${tripEvent}" for="event-type-${tripEvent}-1">${tripEvent}</label>
+  </div>`).join('');
+
+const dropdownCity = (citys) => citys.map((citysName) => `<option value='${citysName}'></option>`).join('');
+
+const createTripEditTimeTemplate = (id, dateFromValue, dateToValue, isDisabled) => (`
+  <div class="event__field-group  event__field-group--time">
+    <label class="visually-hidden" for="event-start-time-${id}">From</label>
+    <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${formatDate(dateFromValue, DAY_TIME_FORMAT)}" ${isDisabled ? 'disabled' : ''}>
+    &mdash;
+    <label class="visually-hidden" for="event-end-time-${id}">To</label>
+    <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${formatDate(dateToValue, DAY_TIME_FORMAT)}" ${isDisabled ? 'disabled' : ''}>
+  </div>`
+);
 
 export const createMainFormTemplate = (data) => {
   const { id, basePrice, dateFrom, dateTo, destination, offers, type, isDisabled, isSaving, isDeleting} = data;
@@ -80,9 +80,9 @@ export const createMainFormTemplate = (data) => {
       ? `<p class="event__destination-description">${destination.description}</p>`
       : ' ';
 
-  const destinationImages = 
-    destination.pictures !== undefined 
-      ? `${imageTemplate(destination.pictures)}` 
+  const destinationImages =
+    destination.pictures !== undefined
+      ? `${imageTemplate(destination.pictures)}`
       : ' ';
 
   const destinationTemplate =

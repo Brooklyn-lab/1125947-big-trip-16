@@ -94,7 +94,7 @@ export default class MainFormView extends SmartView {
         defaultDate: dayjs(this._data.dateFrom).toISOString(),
         onChange: this.#dateFromChangeHandler,
       }
-    )
+    );
   }
 
   #setDateToPicker = () => {
@@ -111,7 +111,7 @@ export default class MainFormView extends SmartView {
         defaultDate: dayjs(this._data.dateTo).toISOString(),
         onChange: this.#dateToChangeHandler,
       }
-    )
+    );
   }
 
   #dateFromChangeHandler = ([userDate]) => {
@@ -157,13 +157,13 @@ export default class MainFormView extends SmartView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
     const destinationInputElement = this.element.querySelector('.event__input--destination');
-
-    if ('') {
+    // доделать...
+    if (evt.target.value) {
       this.updateData({
         destination: {
-          name: newDestination.name,
-          description: newDestination.description,
-          pictures: newDestination.pictures,
+          name: '',
+          description: '',
+          pictures: '',
         }
       });
     } else {
@@ -188,12 +188,12 @@ export default class MainFormView extends SmartView {
   }
 
   static parsePointToData = (point) => ({ ...point,
-    isDisabled: false, 
-    isSaving: false, 
+    isDisabled: false,
+    isSaving: false,
     isDeleting: false
   });
-  
-  static parseDataToPoint = (data) => { 
+
+  static parseDataToPoint = (data) => {
     const point = {...data};
 
     delete point.isDisabled;

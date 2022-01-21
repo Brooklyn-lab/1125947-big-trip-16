@@ -25,12 +25,18 @@ const filterPresenter = new FilterPresenter(headerFiltersWrapper, filterModel, p
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
-    case MenuItem.STATS:
-      break;
     case MenuItem.TABLE:
+      // скрыть статистику
+      tripPresenter.init();
+      filterPresenter.init();
+      break;
+    case MenuItem.STATS:
+      tripPresenter.destroy();
+      filterPresenter.destroy();
+      // показать доску статистики
       break;
   }
-}
+};
 
 headerMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
@@ -46,3 +52,4 @@ pointsModel.init().finally(() => {
   render(headerMainElement, new HeaderInfoView(), RenderPosition.AFTERBEGIN);
   render(headerNavWrapper, headerMenuComponent, RenderPosition.BEFOREEND);
 });
+

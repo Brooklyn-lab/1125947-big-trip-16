@@ -12,8 +12,6 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
 };
 
 export const createHeaderFiltersTemplate = (filterItems, currentFilterType) => {
-  // получаю в консоль filterItems, выдает undefined из-за этого код ниже не работает. Но если его закомитить, то в консоль выдаст undefined, а после уже подгрузится на повторном вызове. И я не пойму почему так.
-
   const filterItemsTemplate = filterItems.map((filter) => createFilterItemTemplate(filter, currentFilterType)).join('');
 
   return (

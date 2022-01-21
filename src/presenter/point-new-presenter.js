@@ -40,16 +40,16 @@ export default class PointNewPresenter {
 
   setSaving = () => {
     this.#pointEditComponent.updateData({
-      isDisabled: true, 
-      isSaving: true, 
+      isDisabled: true,
+      isSaving: true,
     });
   }
 
   setAborting = () => {
     const resetFormState = () => {
       this.#pointEditComponent.updateData({
-        isDisabled: false, 
-        isSaving: false, 
+        isDisabled: false,
+        isSaving: false,
         isDeleting: false
       });
     };

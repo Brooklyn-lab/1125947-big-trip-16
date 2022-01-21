@@ -84,8 +84,8 @@ export default class PointPresenter {
 
     const resetFormState = () => {
       this.#pointEditComponent.updateData({
-        isDisabled: false, 
-        isSaving: false, 
+        isDisabled: false,
+        isSaving: false,
         isDeleting: false
       });
     };
@@ -93,14 +93,14 @@ export default class PointPresenter {
     switch (state) {
       case State.SAVING:
         this.#pointEditComponent.updateData({
-          isDisabled: true, 
-          isSaving: true, 
+          isDisabled: true,
+          isSaving: true,
         });
         break;
       case State.DELETING:
         this.#pointEditComponent.updateData({
-          isDisabled: true, 
-          isSaving: true, 
+          isDisabled: true,
+          isSaving: true,
         });
         break;
       case State.ABORTING:
@@ -158,11 +158,11 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    const isMinorChange = 
-      point.dateFrom !== this.#point.dateFrom || 
+    const isMinorChange =
+      point.dateFrom !== this.#point.dateFrom ||
       point.dateTo !== this.#point.dateTo ||
       point.basePrice !== this.#point.basePrice;
-    
+
     const updateType = isMinorChange ? UpdateType.MINOR : UpdateType.PATCH;
 
     this.#changeData(

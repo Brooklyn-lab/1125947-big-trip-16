@@ -40,7 +40,6 @@ export default class PointModel extends AbstractObservable {
         updatedPoint,
         ...this.#points.slice(index + 1)
       ];
-      // this.#points.slice(index, 1, updatedPoint);
       this._notify(updateType, updatedPoint);
     } catch(err) {
       throw new Error('Can\'t update point');
@@ -52,7 +51,6 @@ export default class PointModel extends AbstractObservable {
       const response = await this.#apiService.addPoint(update);
       const newPoint = this.#adaptToClient(response);
       this.#points = [newPoint, ...this.#points];
-      // this.#points.unshift(newPoint);
       this._notify(updateType, newPoint);
     } catch (err) {
       throw new Error('Can\'t add task');
@@ -68,7 +66,6 @@ export default class PointModel extends AbstractObservable {
 
     try {
       await this.#apiService.deletePoint(update);
-      // this.#points.splice(index, 1);
       this.#points = [
         ...this.#points.slice(0, index),
         ...this.#points.slice(index + 1),
@@ -93,6 +90,6 @@ export default class PointModel extends AbstractObservable {
     delete adaptedPoint['is_favorite'];
 
     return adaptedPoint;
-  }  
+  }
 }
 

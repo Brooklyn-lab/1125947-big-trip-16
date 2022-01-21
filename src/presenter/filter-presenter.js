@@ -10,8 +10,6 @@ export default class FilterPresenter {
   constructor(filterContainer, filterModel) {
     this.#filterContainer = filterContainer;
     this.#filterModel = filterModel;
-
-    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get filters() {
@@ -36,6 +34,8 @@ export default class FilterPresenter {
     this.#filterComponent = new HeaderFiltersView(filters, this.#filterModel.filter);
     this.#filterComponent.setFilterTypeChangeHandler(this.#handleFilterTypeChange);
 
+    this.#filterModel.addObserver(this.#handleModelEvent);
+
     if (prevFilterComponent === null) {
       render(this.#filterContainer, this.#filterComponent, RenderPosition.BEFOREEND);
       return;
@@ -43,6 +43,14 @@ export default class FilterPresenter {
 
     replace(this.#filterComponent, prevFilterComponent);
     remove(prevFilterComponent);
+  }
+
+  destroy = () => {
+    this.#clearFilter();
+    this.#filterComponent = null;
+    this.#filterModel.removeObserver(this.#handleModelEvent);
+    // продумать надо ли
+    this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
   }
 
   #handleModelEvent = () => {
@@ -55,6 +63,11 @@ export default class FilterPresenter {
     }
 
     this.#filterModel.setFilter(UpdateType.MAJOR, filterType);
+  }
+
+  #clearFilter = () => {
+    this.#filterModel.resetFilter();
+    remove(this.#filterComponent);
   }
 }
 

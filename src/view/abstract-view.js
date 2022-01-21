@@ -34,6 +34,6 @@ export default class AbstractView {
       this.element.style.animation = '';
       callback();
     }, SHAKE_ANIMATION_TIMEOUT);
-  }  
+  }
 }
 
