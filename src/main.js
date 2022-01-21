@@ -1,6 +1,7 @@
 import HeaderInfoView from './view/header-info-view/header-info-view.js';
 import HeaderMenuView from './view/header-menu-view/header-menu-view.js';
-import { render, RenderPosition } from './utils/render.js';
+import StatisticView from './view/statistic-view/statistic-view.js';
+import { remove, render, RenderPosition } from './utils/render.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import PointModel from './model/points-model.js';
@@ -23,17 +24,22 @@ const headerMenuComponent = new HeaderMenuView();
 const tripPresenter = new TripPresenter(mainTripElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(headerFiltersWrapper, filterModel, pointsModel);
 
+let statisticComponent = null;
+
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
-      // скрыть статистику
+      remove(statisticComponent);
+      tripPresenter.destroy();
       tripPresenter.init();
+      filterPresenter.destroy();
       filterPresenter.init();
       break;
     case MenuItem.STATS:
       tripPresenter.destroy();
       filterPresenter.destroy();
-      // показать доску статистики
+      statisticComponent = new StatisticView(pointsModel.points);
+      render(mainTripElement, statisticComponent, RenderPosition.AFTEREND);
       break;
   }
 };

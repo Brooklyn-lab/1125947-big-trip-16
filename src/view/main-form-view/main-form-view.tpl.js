@@ -73,8 +73,6 @@ const createTripEditTimeTemplate = (id, dateFromValue, dateToValue, isDisabled) 
 export const createMainFormTemplate = (data) => {
   const { id, basePrice, dateFrom, dateTo, destination, offers, type, isDisabled, isSaving, isDeleting} = data;
 
-  // console.log(data);
-
   const destinationDescriptopn =
     destination.description !== undefined
       ? `<p class="event__destination-description">${destination.description}</p>`

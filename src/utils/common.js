@@ -28,6 +28,13 @@ export const calculateDateDiff = (startDay, endDay) => {
   return timeString;
 };
 
+export const eventDurationFormat = (duration) => {
+  const minutesDuration = duration % 60 > 0 ? `${duration % 60}M` : '';
+  const hoursDuration = Math.floor(duration / 60) % 24 > 0 ? `${Math.floor(duration / 60) % 24}H ` : '';
+  const daysDuration = Math.floor((duration / 60) / 24) > 0 ? `${Math.floor((duration / 60) / 24)}D ` : '';
+  return daysDuration + hoursDuration + minutesDuration;
+};
+
 export const sortPointDate = (pointA, pointB) => {
   if (pointA.startDate > pointB.startDate) {
     return 1;

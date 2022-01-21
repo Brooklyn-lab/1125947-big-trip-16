@@ -67,10 +67,10 @@ export default class TripPresenter {
     this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
-  createPoint = () => {
+  createPoint = (callback) => {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.DEFAULT);
-    this.#pointNewPresenter.init();
+    this.#pointNewPresenter.init(callback);
   }
 
   #handleModeChange = () => {

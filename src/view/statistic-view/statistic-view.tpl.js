@@ -1,10 +1,7 @@
-const createStatisticTemplate = () => (
+export const createStatisticTemplate = () => (
   `<section class="statistics">
     <h2 class="visually-hidden">Trip statistics</h2>
-
-    <!-- Пример диаграмм -->
-    <img src="img/big-trip-stats-markup.png" alt="Пример диаграмм">
-
+    
     <div class="statistics__item">
       <canvas class="statistics__chart" id="money" width="900"></canvas>
     </div>
