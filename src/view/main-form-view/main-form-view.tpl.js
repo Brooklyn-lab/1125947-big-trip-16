@@ -50,7 +50,10 @@ const offerTemplate = (offer) => (
     </div>`
 );
 
-const destinationOffers = (offers) => offers.map((offer) => offerTemplate(offer)).join('');
+const destinationOffers = (offers) => {
+  debugger;
+  return offers.map((offer) => offerTemplate(offer)).join('')
+};
 
 const getEventList = (array) => array.map((tripEvent) =>
   `<div class="event__type-item">
@@ -71,7 +74,7 @@ const createTripEditTimeTemplate = (id, dateFromValue, dateToValue, isDisabled) 
 );
 
 export const createMainFormTemplate = (data) => {
-  const { id, basePrice, dateFrom, dateTo, destination, offers, type, isDisabled, isSaving, isDeleting} = data;
+  const { id, basePrice, dateFrom, dateTo, destination, offers, type, isDisabled, isSaving, isDeleting } = data;
 
   const destinationDescriptopn =
     destination.description !== undefined

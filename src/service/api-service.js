@@ -19,6 +19,18 @@ export default class ApiService {
       .then(ApiService.parseResponse);
   }
 
+  getDestinations = async () => {
+    const response = await this.#load({
+      url: `destinations`,
+      method: Method.GET,
+      headers: new Headers({'Content-Type': 'application/json'}),
+    });
+
+    const parsedResponse = await ApiService.parseResponse(response);
+
+    return parsedResponse;
+  }
+
   updatePoint = async (point) => {
     const response = await this.#load({
       url: `points/${point.id}`,

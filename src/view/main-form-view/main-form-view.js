@@ -4,23 +4,23 @@ import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import 'flatpickr/dist/flatpickr.min.css';
 
-// const EMPTY_POINT = {
-//   id: null,
-//   basePrice: 0,
-//   dateFrom: dayjs().toDate(),
-//   dateTo: dayjs().toDate(),
-//   destination: {},
-//   isFavorite: false,
-//   offer: 0,
-// };
+const EMPTY_POINT = {
+  id: null,
+  basePrice: 0,
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().toDate(),
+  destination: {},
+  isFavorite: false,
+  offers: []
+};
 
 export default class MainFormView extends SmartView {
   #dateFromPicker = null;
   #dateToPicker = null;
 
-  constructor(point) {
+  constructor() {
     super();
-    this._data = MainFormView.parsePointToData(point);
+    this._data = MainFormView.parsePointToData(EMPTY_POINT);
     this.#setInnerHandlers();
     this.#setDateFromPicker();
     this.#setDateToPicker();
@@ -128,7 +128,7 @@ export default class MainFormView extends SmartView {
 
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
-    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
   }
@@ -187,14 +187,15 @@ export default class MainFormView extends SmartView {
     }, true);
   }
 
-  static parsePointToData = (point) => ({ ...point,
+  static parsePointToData = (point) => ({
+    ...point,
     isDisabled: false,
     isSaving: false,
     isDeleting: false
   });
 
   static parseDataToPoint = (data) => {
-    const point = {...data};
+    const point = { ...data };
 
     delete point.isDisabled;
     delete point.isSaving;

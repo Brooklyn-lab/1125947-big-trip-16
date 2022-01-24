@@ -18,7 +18,9 @@ const headerFiltersWrapper = headerMainElement.querySelector('.trip-controls__fi
 const mainBodyElement = document.querySelector('.page-main');
 const mainTripElement = mainBodyElement.querySelector('.trip-events');
 
-const pointsModel = new PointModel(new ApiService(END_POINT, AUTHORIZATION));
+const apiService = new ApiService(END_POINT, AUTHORIZATION);
+
+const pointsModel = new PointModel(apiService);
 const filterModel = new FilterModel();
 const headerMenuComponent = new HeaderMenuView();
 const tripPresenter = new TripPresenter(mainTripElement, pointsModel, filterModel);
@@ -47,7 +49,10 @@ const handleSiteMenuClick = (menuItem) => {
 headerMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
-tripPresenter.init();
+
+apiService.getDestinations().then((destinations) => {
+  tripPresenter.init(destinations);
+});
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
