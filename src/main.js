@@ -4,6 +4,7 @@ import StatisticView from './view/statistic-view/statistic-view.js';
 import { remove, render, RenderPosition } from './utils/render.js';
 import TripPresenter from './presenter/trip-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
+import TripInfoPresenter from './presenter/trip-info-presenter.js';
 import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import ApiService from './service/api-service.js';
@@ -49,10 +50,7 @@ const handleSiteMenuClick = (menuItem) => {
 headerMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 
 filterPresenter.init();
-
-apiService.getDestinations().then((destinations) => {
-  tripPresenter.init(destinations);
-});
+tripPresenter.init();
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
   evt.preventDefault();
@@ -60,7 +58,8 @@ document.querySelector('.trip-main__event-add-btn').addEventListener('click', (e
 });
 
 pointsModel.init().finally(() => {
-  render(headerMainElement, new HeaderInfoView(), RenderPosition.AFTERBEGIN);
+  const tripInfoPresenter = new TripInfoPresenter(headerMainElement, pointsModel);
+  tripInfoPresenter.init();
   render(headerNavWrapper, headerMenuComponent, RenderPosition.BEFOREEND);
 });
 

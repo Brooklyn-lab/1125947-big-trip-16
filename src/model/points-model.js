@@ -4,6 +4,8 @@ import { UpdateType } from '../const.js';
 export default class PointModel extends AbstractObservable {
   #apiService = null;
   #points = [];
+  #offers = [];
+  #destinations = [];
 
   constructor(apiService) {
     super();
@@ -18,12 +20,33 @@ export default class PointModel extends AbstractObservable {
       this.#points = [];
     }
 
+    try {
+      const offers = await this.#apiService.offers;
+      this.#offers = this.#adaptOffersToClient(offers);
+    } catch(err) {
+      this.#offers = [];
+    }
+
+    try {
+      this.#destinations = await this.#apiService.destinations;
+    } catch(err) {
+      this.#destinations = [];
+    }
+
     this._notify(UpdateType.INIT);
   }
 
   get points() {
     return this.#points;
   }
+
+  get offers() {
+    return this.#offers;
+  }
+
+  get destinations() {
+    return this.#destinations;
+  }  
 
   updatePoint = async (updateType, update) => {
     const index = this.#points.findIndex((point) => point.id === update.id);
@@ -74,6 +97,14 @@ export default class PointModel extends AbstractObservable {
     } catch(err) {
       throw new Error('Can\'t delete point');
     }
+  }
+
+  #adaptOffersToClient = (responseOffers) => {
+    const adaptedOffers = {};
+    responseOffers.forEach((responseOffer) => {
+      adaptedOffers[responseOffer.type] = responseOffer.offers;
+    });
+    return adaptedOffers;
   }
 
   #adaptToClient = (point) => {

@@ -4,30 +4,24 @@ import flatpickr from 'flatpickr';
 import dayjs from 'dayjs';
 import 'flatpickr/dist/flatpickr.min.css';
 
-const EMPTY_POINT = {
-  id: null,
-  basePrice: 0,
-  dateFrom: dayjs().toDate(),
-  dateTo: dayjs().toDate(),
-  destination: {},
-  isFavorite: false,
-  offers: []
-};
-
 export default class MainFormView extends SmartView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #newOffers = null;
+  #newDestinations = null;
 
-  constructor() {
+  constructor(point, newOffers, newDestinations) {
     super();
-    this._data = MainFormView.parsePointToData(EMPTY_POINT);
+    this._data = MainFormView.parsePointToData(point);
+    this.#newOffers = newOffers;
+    this.#newDestinations = newDestinations;
     this.#setInnerHandlers();
     this.#setDateFromPicker();
     this.#setDateToPicker();
   }
 
   get template() {
-    return createMainFormTemplate(this._data);
+    return createMainFormTemplate(this._data, this.#newOffers, this.#newDestinations);
   }
 
   removeElement = () => {
@@ -60,8 +54,12 @@ export default class MainFormView extends SmartView {
   }
 
   setEditClickHandler = (callback) => {
-    this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    const rollUpButton = this.element.querySelector('.event__rollup-btn');
+
+    if (rollUpButton !== null) {
+      this._callback.editClick = callback;
+      rollUpButton.addEventListener('click', this.#editClickHandler);
+    }
   }
 
   #editClickHandler = (evt) => {
@@ -74,11 +72,15 @@ export default class MainFormView extends SmartView {
     this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
   }
 
+  setCancelClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  }
+
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.deleteClick(MainFormView.parseDataToPoint(this._data));
   }
-
 
   #setDateFromPicker = () => {
     if (this.#dateFromPicker) {
@@ -128,7 +130,7 @@ export default class MainFormView extends SmartView {
 
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
-    this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
+    this.element.querySelector('.event__input--price').addEventListener('input', this.#priceChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
     this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
   }
@@ -136,7 +138,8 @@ export default class MainFormView extends SmartView {
   #eventTypeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      type: evt.target.value
+      type: evt.target.value,
+      offers: this.#newOffers[evt.target.value]
     });
   }
 
@@ -145,7 +148,6 @@ export default class MainFormView extends SmartView {
     const priceInputElement = this.element.querySelector('.event__input--price');
 
     if (evt.target.value !== '') {
-      priceInputElement.setCustomValidity('');
       this.updateData({
         basePrice: Number(evt.target.value)
       }, true);
@@ -157,13 +159,14 @@ export default class MainFormView extends SmartView {
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
     const destinationInputElement = this.element.querySelector('.event__input--destination');
-    // доделать...
-    if (evt.target.value) {
+    const newDestination = this.#newDestinations.find((destination) => destination.name === evt.target.value);
+
+    if (newDestination) {
       this.updateData({
         destination: {
-          name: '',
-          description: '',
-          pictures: '',
+          description: newDestination.description,
+          name: newDestination.name,
+          pictures: newDestination.pictures,
         }
       });
     } else {
@@ -183,8 +186,8 @@ export default class MainFormView extends SmartView {
     }));
 
     this.updateData({
-      offers: checkedOffersValues,
-    }, true);
+      offers: [...checkedOffersValues],
+    });
   }
 
   static parsePointToData = (point) => ({

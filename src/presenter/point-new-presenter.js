@@ -14,18 +14,16 @@ export default class PointNewPresenter {
     this.#changeData = changeData;
   }
 
-  init = (callback) => {
-    this.#destroyCallback = callback;
-
+  init = (point, newOffers, newDestinations) => {
     if (this.#pointEditComponent !== null) {
       return;
     }
 
-    this.#pointEditComponent = new MainFormView();
+    this.#pointEditComponent = new MainFormView(point, newOffers, newDestinations);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
+    this.#pointEditComponent.setCancelClickHandler(this.#handleDeleteClick);
 
-    render(this.#pointListContainer, this.#pointEditComponent, RenderPosition.BEFOREEND);
+    render(this.#pointListContainer, this.#pointEditComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this.#escKeyDownHandler);
   }
@@ -64,8 +62,8 @@ export default class PointNewPresenter {
 
   #handleFormSubmit = (point) => {
     this.#changeData(
-      UserAction.UPDATE_POINT,
-      UpdateType.PATCH,
+      UserAction.ADD_POINT,
+      UpdateType.MAJOR,
       point
     );
   }
@@ -81,5 +79,4 @@ export default class PointNewPresenter {
     }
   };
 }
-
 

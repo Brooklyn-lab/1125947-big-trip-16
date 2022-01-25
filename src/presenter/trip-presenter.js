@@ -5,7 +5,7 @@ import LoadingView from '../view/loading-view/loading-view.js';
 import { remove, render, RenderPosition } from '../utils/render.js';
 import PointPresenter, { State as PointPresenterViewState } from './point-presenter.js';
 import PointNewPresenter from './point-new-presenter.js';
-import { SortType, UpdateType, UserAction, FilterType } from '../const.js';
+import { SortType, UpdateType, UserAction, FilterType, EMPTY_POINT } from '../const.js';
 import { sortPointPrice, sortPointTime, sortPointDate } from '../utils/common.js';
 import { filter } from '../utils/filter.js';
 
@@ -13,8 +13,7 @@ export default class TripPresenter {
   #tripContainer = null;
   #pointsModel = null;
   #filterModel = null;
-  #destinations = [];
- 
+
   #tripListComponent = new MainTripListView();
   #loadingComponent = new LoadingView();
   #noTripComponent = null;
@@ -37,13 +36,10 @@ export default class TripPresenter {
   get points() {
     this.#filterType = this.#filterModel.filter;
     const points = this.#pointsModel.points;
-    console.log(filter, this.#filterType);
     const filteredPoints = filter[this.#filterType](points);
-
 
     switch (this.#currentSortType) {
       case SortType.TIME:
-        console.log([...filteredPoints].sort(sortPointTime));
         return [...filteredPoints].sort(sortPointTime);
       case SortType.PRICE:
         return [...filteredPoints].sort(sortPointPrice);
@@ -54,10 +50,7 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
-  init = (destinations) => {
-    this.#destinations = destinations;
-    console.log(destinations);
-    
+  init = () => {
     render(this.#tripContainer, this.#tripListComponent, RenderPosition.BEFOREEND);
 
     this.#pointsModel.addObserver(this.#handleModelEvent);
@@ -74,10 +67,10 @@ export default class TripPresenter {
     this.#filterModel.removeObserver(this.#handleModelEvent);
   }
 
-  createPoint = (callback) => {
+  createPoint = () => {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this.#pointNewPresenter.init(callback);
+    this.#pointNewPresenter.init(EMPTY_POINT, this.#pointsModel.offers, this.#pointsModel.destinations);
   }
 
   #handleModeChange = () => {
@@ -86,6 +79,7 @@ export default class TripPresenter {
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
+    debugger
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.SAVING);
@@ -117,7 +111,7 @@ export default class TripPresenter {
   #handleModelEvent = (updateType, data) => {
     switch (updateType) {
       case UpdateType.PATCH:
-        this.#pointPresenter.get(data.id).init(data);
+        this.#pointPresenter.get(data.id).init(data, this.#pointsModel.offers, this.#pointsModel.destinations);
         break;
       case UpdateType.MINOR:
         this.#clearTripList();
@@ -154,7 +148,7 @@ export default class TripPresenter {
 
   #renderPoint = (point) => {
     const pointPresenter = new PointPresenter(this.#tripListComponent, this.#handleViewAction, this.#handleModeChange);
-    pointPresenter.init(point);
+    pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destinations);
     this.#pointPresenter.set(point.id, pointPresenter);
   }
 
@@ -172,7 +166,6 @@ export default class TripPresenter {
   }
 
   #clearTripList = ({ resetSortType = false } = {}) => {
-
     this.#pointNewPresenter.destroy();
     this.#pointPresenter.forEach((presenter) => presenter.destroy());
     this.#pointPresenter.clear();

@@ -49,7 +49,6 @@ export default class FilterPresenter {
     this.#clearFilter();
     this.#filterComponent = null;
     this.#filterModel.removeObserver(this.#handleModelEvent);
-    // продумать надо ли
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
   }
 

@@ -1,3 +1,5 @@
+import dayjs from 'dayjs';
+
 export const SortType = {
   DEFAULT: 'default',
   TIME: 'time',
@@ -30,5 +32,22 @@ export const FilterType = {
 export const MenuItem = {
   TABLE: 'Table',
   STATS: 'Stats'
+};
+
+export const TRIP_EVENT_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
+export const EMPTY_POINT = {
+  id: null,
+  basePrice: 0,
+  dateFrom: dayjs().toDate(),
+  dateTo: dayjs().toDate(),
+  destination: {
+    name: '',
+    description: '',
+    pictures: [],
+  },
+  isFavorite: true,
+  offers: [], 
+  type: TRIP_EVENT_TYPE[0]
 };
 
