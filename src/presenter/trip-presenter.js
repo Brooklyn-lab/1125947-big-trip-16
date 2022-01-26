@@ -79,7 +79,6 @@ export default class TripPresenter {
   }
 
   #handleViewAction = async (actionType, updateType, update) => {
-    debugger
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this.#pointPresenter.get(update.id).setViewState(PointPresenterViewState.SAVING);

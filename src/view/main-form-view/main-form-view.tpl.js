@@ -1,7 +1,7 @@
 import { TRIP_EVENT_TYPE, DAY_TIME_FORMAT } from '../../const';
 import { formatDate } from '../../utils/common';
 
-const createPicturesTemplate = (pictures) => { 
+const createPicturesTemplate = (pictures) => {
   if (pictures) {
     const images = pictures.map((picture) => (
       `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`
@@ -26,7 +26,7 @@ const createEditOfferTemplate = (offers, typeOffer) => {
   if (selectedTypeOffer !== undefined) {
     isSelected = true;
   }
-  
+
   return (
     `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-luggage-${typeOffer.id}" type="checkbox" name="event-offer-luggage" data-id="${typeOffer.id}" data-title="${typeOffer.title}" data-price="${typeOffer.price}" ${isSelected ? 'checked' : ''}>
@@ -121,12 +121,13 @@ export const createMainFormTemplate = (data, newOffers, newDestinations) => {
         </div>
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmit || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
         <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${createButtonChangeText()}</button>
-        ${id ? 
-          `<button class="event__rollup-btn" type="button">
-            <span class="visually-hidden">Open event</span>
-          </button>` 
-          : ''
-        }
+        ${id
+    ?
+    `<button class="event__rollup-btn" type="button">
+      <span class="visually-hidden">Open event</span>
+    </button>`
+    : ''
+}
       </header>
       <section class="event__details">
         <section class="event__section  event__section--offers">

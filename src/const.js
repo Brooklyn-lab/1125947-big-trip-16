@@ -47,7 +47,7 @@ export const EMPTY_POINT = {
     pictures: [],
   },
   isFavorite: true,
-  offers: [], 
+  offers: [],
   type: TRIP_EVENT_TYPE[0]
 };
 

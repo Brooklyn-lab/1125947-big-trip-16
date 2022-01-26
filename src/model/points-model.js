@@ -46,7 +46,7 @@ export default class PointModel extends AbstractObservable {
 
   get destinations() {
     return this.#destinations;
-  }  
+  }
 
   updatePoint = async (updateType, update) => {
     const index = this.#points.findIndex((point) => point.id === update.id);

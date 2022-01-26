@@ -14,5 +14,5 @@ export const createStatisticTemplate = () => (
       <canvas class="statistics__chart" id="time" width="900"></canvas>
     </div>
   </section>`
-)
+);
 

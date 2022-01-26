@@ -26,8 +26,8 @@ export const createHeaderInfoTemplate = (points) => {
     }
   };
 
-  const calculatePrice = (points) => {
-    const priceTotal = points.reduce((total, point) => {
+  const calculatePrice = (pointsPrice) => {
+    const priceTotal = pointsPrice.reduce((total, point) => {
       const { basePrice, offers } = point;
       let offersTotal = 0;
       if (offers && offers.length > 0) {
@@ -38,7 +38,7 @@ export const createHeaderInfoTemplate = (points) => {
     }, 0);
 
     return priceTotal;
-  };  
+  };
 
   return (
     `<section class="trip-main__trip-info  trip-info">

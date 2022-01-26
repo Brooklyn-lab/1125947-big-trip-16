@@ -1,4 +1,3 @@
-import HeaderInfoView from './view/header-info-view/header-info-view.js';
 import HeaderMenuView from './view/header-menu-view/header-menu-view.js';
 import StatisticView from './view/statistic-view/statistic-view.js';
 import { remove, render, RenderPosition } from './utils/render.js';

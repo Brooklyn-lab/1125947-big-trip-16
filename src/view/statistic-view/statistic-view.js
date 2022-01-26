@@ -25,7 +25,7 @@ const renderMoneyChart = (moneyCtx, points) => {
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
         barThickness: 44,
-        minBarLength: 50,
+        minBarLength: 100,
       }],
     },
     options: {
@@ -99,7 +99,7 @@ const renderTypeChart = (typeCtx, points) => {
         hoverBackgroundColor: '#ffffff',
         anchor: 'start',
         barThickness: 44,
-        minBarLength: 50,
+        minBarLength: 100,
       }],
     },
     options: {
@@ -172,7 +172,7 @@ const renderTimeChart = (timeCtx, points) => {
         backgroundColor: '#ffffff',
         anchor: 'start',
         barThickness: 44,
-        minBarLength: 50,
+        minBarLength: 100,
       }],
     },
     options: {
@@ -250,7 +250,7 @@ export default class StatisticView extends SmartView {
       this.#moneyChart.destroy();
       this.#moneyChart = null;
     }
-    
+
     if (this.#typeChart) {
       this.#typeChart.destroy();
       this.#typeChart = null;
