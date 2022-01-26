@@ -170,6 +170,7 @@ export default class PointPresenter {
       updateType,
       point
     );
+    this.#replaceFormToPoint();
   }
 }
 
