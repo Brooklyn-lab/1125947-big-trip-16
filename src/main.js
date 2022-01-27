@@ -8,24 +8,19 @@ import PointModel from './model/points-model.js';
 import FilterModel from './model/filter-model.js';
 import ApiService from './service/api-service.js';
 import { MenuItem } from './const.js';
-
-const AUTHORIZATION = 'Basic klj893dahk34afts';
-const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
+import { AUTHORIZATION, END_POINT } from './service/api-service.js';
 
 const headerMainElement = document.querySelector('.trip-main');
 const headerNavWrapper = headerMainElement.querySelector('.trip-controls__navigation');
 const headerFiltersWrapper = headerMainElement.querySelector('.trip-controls__filters');
 const mainBodyElement = document.querySelector('.page-main');
 const mainTripElement = mainBodyElement.querySelector('.trip-events');
-
 const apiService = new ApiService(END_POINT, AUTHORIZATION);
-
 const pointsModel = new PointModel(apiService);
 const filterModel = new FilterModel();
 const headerMenuComponent = new HeaderMenuView();
 const tripPresenter = new TripPresenter(mainTripElement, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(headerFiltersWrapper, filterModel, pointsModel);
-
 let statisticComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {

@@ -1,3 +1,6 @@
+export const AUTHORIZATION = 'Basic klj893dahk34afts';
+export const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
+
 const Method = {
   GET: 'GET',
   PUT: 'PUT',
