@@ -158,19 +158,11 @@ export default class PointPresenter {
   }
 
   #handleFormSubmit = (point) => {
-    const isMinorChange =
-      point.dateFrom !== this.#point.dateFrom ||
-      point.dateTo !== this.#point.dateTo ||
-      point.basePrice !== this.#point.basePrice;
-
-    const updateType = isMinorChange ? UpdateType.MINOR : UpdateType.PATCH;
-
     this.#changeData(
       UserAction.UPDATE_POINT,
-      updateType,
+      UpdateType.MINOR,
       point
     );
-    this.#replaceFormToPoint();
   }
 }
 

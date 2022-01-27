@@ -40,9 +40,7 @@ export default class ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+    return await ApiService.parseResponse(response);
   }
 
   addPoint = async (point) => {
@@ -53,19 +51,13 @@ export default class ApiService {
       headers: new Headers({'Content-Type': 'application/json'}),
     });
 
-    const parsedResponse = await ApiService.parseResponse(response);
-
-    return parsedResponse;
+    return await ApiService.parseResponse(response);
   }
 
-  deletePoint = async (point) => {
-    const response = await this.#load({
-      url: `points/${point.id}`,
-      method: Method.DELETE,
-    });
-
-    return response;
-  }
+  deletePoint = async (point) => await this.#load({
+    url: `points/${point.id}`,
+    method: Method.DELETE,
+  });
 
   #load = async ({
     url,
