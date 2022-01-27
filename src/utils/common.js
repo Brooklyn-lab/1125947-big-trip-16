@@ -21,8 +21,6 @@ export const calculateDateDiff = (startDay, endDay) => {
   return timeString;
 };
 
-export const createDateTemplate = (dateFrom, format) => dayjs(dateFrom).format(format);
-
 export const eventDurationFormat = (duration) => {
   const minutesDuration = duration % 60 > 0 ? `${duration % 60}M` : '';
   const hoursDuration = Math.floor(duration / 60) % 24 > 0 ? `${Math.floor(duration / 60) % 24}H ` : '';
@@ -30,31 +28,11 @@ export const eventDurationFormat = (duration) => {
   return daysDuration + hoursDuration + minutesDuration;
 };
 
-export const sortPointDate = (pointA, pointB) => {
-  if (pointA.startDate > pointB.startDate) {
-    return 1;
-  }
-
-  if (pointA.startDate < pointB.startDate) {
-    return -1;
-  }
-
-  return 0;
-};
-
-export const sortPointTime = (pointTimeA, pointTimeB) => dayjs(pointTimeA.dateFrom).diff(dayjs(pointTimeB.dateTo)) - dayjs(pointTimeB.dateFrom).diff(dayjs(pointTimeB.dateTo));
-
 export const sortPointPrice = (pointPriceA, pointPriceB) => pointPriceB.basePrice - pointPriceA.basePrice;
 
-export const sortByDate = (pointA, pointB) => {
-  if (pointA.dateFrom > pointB.dateFrom) {
-    return 1;
-  }
+export const sortPointDate = (pointDateA, pointDateB) => pointDateA.dateFrom - pointDateB.dateFrom;
 
-  if (pointA.dateFrom < pointB.dateFrom) {
-    return -1;
-  }
+const getEventDuration = (start, end) => dayjs(start).diff(dayjs(end));
 
-  return 0;
-};
+export const sortPointTime = (eventA, eventB) => getEventDuration(eventA.dateFrom, eventA.dateTo) - getEventDuration(eventB.dateFrom, eventB.dateTo);
 

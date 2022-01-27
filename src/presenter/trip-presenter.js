@@ -52,10 +52,8 @@ export default class TripPresenter {
 
   init = () => {
     render(this.#tripContainer, this.#tripListComponent, RenderPosition.BEFOREEND);
-
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
-
     this.#renderTrip();
   }
 

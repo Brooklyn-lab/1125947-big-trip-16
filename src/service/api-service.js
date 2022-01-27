@@ -1,4 +1,4 @@
-export const AUTHORIZATION = 'Basic klj893dahk34afts';
+export const AUTHORIZATION = 'Basic klj893dahk34aft4';
 export const END_POINT = 'https://16.ecmascript.pages.academy/big-trip';
 
 const Method = {

@@ -1,6 +1,6 @@
 import HeaderInfoView from '../view/header-info-view/header-info-view';
 import {render, RenderPosition, replace, remove} from '../utils/render';
-import { sortByDate } from '../utils/common';
+import { sortPointDate } from '../utils/common';
 
 export default class TripInfoPresenter {
   #tripInfoContainer = null;
@@ -16,7 +16,7 @@ export default class TripInfoPresenter {
 
   init = () => {
     const prevTripInfoComponent = this.#tripInfoComponent;
-    this.#points = this.#pointsModel.points.sort(sortByDate);
+    this.#points = this.#pointsModel.points.sort(sortPointDate);
 
     if (!this.#points.length && prevTripInfoComponent === null) {
       return;

@@ -110,8 +110,8 @@ export default class PointModel extends AbstractObservable {
   #adaptToClient = (point) => {
     const adaptedPoint = {...point,
       basePrice: point['base_price'],
-      dateFrom: point['date_from'] ?? new Date(point['date_from']),
-      dateTo: point['date_to'] ?? new Date(point['date_to']),
+      dateFrom: point['date_from'] !== null ? new Date(point['date_from']) : point['date_from'],
+      dateTo: point['date_to'] !== null ? new Date(point['date_to']) : point['date_to'],
       isFavorite: point['is_favorite'],
     };
 

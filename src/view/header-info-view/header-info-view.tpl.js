@@ -1,8 +1,9 @@
-import { createDateTemplate } from '../../utils/common';
+import { formatDate } from '../../utils/common';
+import {DAY_FORMAT} from '../../const';
 
 export const createHeaderInfoTemplate = (points) => {
-  const dateFrom = createDateTemplate(points[0].dateFrom, 'MMM DD');
-  const dateTo = createDateTemplate(points[points.length - 1].dateFrom, 'MMM DD');
+  const dateFrom = formatDate(points[0].dateFrom, DAY_FORMAT);
+  const dateTo = formatDate(points[points.length - 1].dateFrom, DAY_FORMAT);
   const firstCity = points[0].destination.name;
   const lastCity = points[points.length - 1].destination.name;
 
