@@ -6,6 +6,14 @@ export const formatDate = (date, dayFormat = 'YYYY-MM-DDTHH:mm:ss.sssZ') => dayj
 
 export const isPointFuture = (date) => dayjs().isBefore(date, 'D');
 
+export const sortPointPrice = (pointPriceA, pointPriceB) => pointPriceB.basePrice - pointPriceA.basePrice;
+
+export const sortPointDate = (pointDateA, pointDateB) => pointDateA.dateFrom - pointDateB.dateFrom;
+
+const getEventDuration = (start, end) => dayjs(start).diff(dayjs(end));
+
+export const sortPointTime = (eventA, eventB) => getEventDuration(eventA.dateFrom, eventA.dateTo) - getEventDuration(eventB.dateFrom, eventB.dateTo);
+
 export const calculateDateDiff = (startDay, endDay) => {
   const dateDiff = Math.abs(startDay - endDay) / 1000 / 60;
   let timeString;
@@ -27,12 +35,4 @@ export const eventDurationFormat = (duration) => {
   const daysDuration = Math.floor((duration / 60) / 24) > 0 ? `${Math.floor((duration / 60) / 24)}D ` : '';
   return daysDuration + hoursDuration + minutesDuration;
 };
-
-export const sortPointPrice = (pointPriceA, pointPriceB) => pointPriceB.basePrice - pointPriceA.basePrice;
-
-export const sortPointDate = (pointDateA, pointDateB) => pointDateA.dateFrom - pointDateB.dateFrom;
-
-const getEventDuration = (start, end) => dayjs(start).diff(dayjs(end));
-
-export const sortPointTime = (eventA, eventB) => getEventDuration(eventA.dateFrom, eventA.dateTo) - getEventDuration(eventB.dateFrom, eventB.dateTo);
 
