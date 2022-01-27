@@ -51,3 +51,7 @@ export const EMPTY_POINT = {
   type: TRIP_EVENT_TYPE[0],
 };
 
+export const BAR_HEIGHT = 450;
+export const SHAKE_ANIMATION_TIMEOUT = 600;
+export const DELAY = 1000;
+

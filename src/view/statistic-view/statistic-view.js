@@ -4,11 +4,10 @@ import Chart from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { calculateTypeCost, calculateTypeCount, calculateTypeTime, tripEventType } from '../../utils/statistics';
 import { eventDurationFormat } from '../../utils/common';
-
-const BAR_HEIGHT = 75;
+import { BAR_HEIGHT } from '../../const';
 
 const renderMoneyChart = (moneyCtx, points) => {
-  moneyCtx.height = BAR_HEIGHT * 6;
+  moneyCtx.height = BAR_HEIGHT;
 
   const pointsTypesCost = calculateTypeCost(points);
   const typeLabels = [...pointsTypesCost.keys()];
@@ -82,7 +81,7 @@ const renderMoneyChart = (moneyCtx, points) => {
 };
 
 const renderTypeChart = (typeCtx, points) => {
-  typeCtx.height = BAR_HEIGHT * 6;
+  typeCtx.height = BAR_HEIGHT;
 
   const pointsTypesCount = calculateTypeCount(points);
   const typeLabels = [...pointsTypesCount.keys()];
@@ -156,7 +155,7 @@ const renderTypeChart = (typeCtx, points) => {
 };
 
 const renderTimeChart = (timeCtx, points) => {
-  timeCtx.height = BAR_HEIGHT * 5;
+  timeCtx.height = BAR_HEIGHT;
 
   const pointsTypesTime = calculateTypeTime(points);
   const typeLabels = [...pointsTypesTime.keys()];
@@ -176,6 +175,7 @@ const renderTimeChart = (timeCtx, points) => {
       }],
     },
     options: {
+      responsive: false,
       plugins: {
         datalabels: {
           font: {
