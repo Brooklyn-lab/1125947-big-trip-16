@@ -3,12 +3,16 @@ import AbstractView from './abstract-view';
 export default class SmartView extends AbstractView {
   _data = {};
 
-  updateData = (update) => {
+  updateData = (update, isRerenderRequired) => {
     if (!update) {
       return;
     }
 
     this._data = { ...this._data, ...update };
+
+    if (isRerenderRequired) {
+      return;
+    }
 
     this.updateElement();
   }

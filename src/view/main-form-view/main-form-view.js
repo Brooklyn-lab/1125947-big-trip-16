@@ -1,37 +1,31 @@
 import SmartView from '../smart-view';
 import { createMainFormTemplate } from './main-form-view.tpl';
 import flatpickr from 'flatpickr';
-import { getOffer, randomLinks, randomStrings, DESCRIPTION } from '../../mock/task';
-
-import '../../../node_modules/flatpickr/dist/flatpickr.min.css';
+import dayjs from 'dayjs';
+import 'flatpickr/dist/flatpickr.min.css';
 
 export default class MainFormView extends SmartView {
   #dateFromPicker = null;
   #dateToPicker = null;
+  #newOffers = null;
+  #newDestinations = null;
 
-  constructor(point) {
+  constructor(point, newOffers, newDestinations) {
     super();
     this._data = MainFormView.parsePointToData(point);
+    this.#newOffers = newOffers;
+    this.#newDestinations = newDestinations;
     this.#setInnerHandlers();
-    this.#setDatepicker();
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
 
   get template() {
-    return createMainFormTemplate(this._data);
+    return createMainFormTemplate(this._data, this.#newOffers, this.#newDestinations);
   }
 
   removeElement = () => {
     super.removeElement();
-
-    if (this.#dateFromPicker) {
-      this.#dateFromPicker.destroy();
-      this.#dateFromPicker = null;
-    }
-
-    if (this.#dateToPicker) {
-      this.#dateToPicker.destroy();
-      this.#dateToPicker = null;
-    }
   }
 
   reset = (point) => {
@@ -40,33 +34,13 @@ export default class MainFormView extends SmartView {
     );
   }
 
-  updateData = (update) => {
-    if (!update) {
-      return;
-    }
-
-    this._data = { ...this._data, ...update };
-
-    this.updateElement();
-  }
-
-  updateElement = () => {
-    const prevElement = this.element;
-    const parent = prevElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.element;
-
-    parent.replaceChild(newElement, prevElement);
-
-    this.restoreHandlers();
-  }
-
   restoreHandlers = () => {
     this.#setInnerHandlers();
-    this.#setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
     this.setEditClickHandler(this._callback.editClick);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+    this.#setDateFromPicker();
+    this.#setDateToPicker();
   }
 
   setFormSubmitHandler = (callback) => {
@@ -80,32 +54,63 @@ export default class MainFormView extends SmartView {
   }
 
   setEditClickHandler = (callback) => {
-    this._callback.editClick = callback;
-    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+    const rollUpButton = this.element.querySelector('.event__rollup-btn');
+
+    if (rollUpButton !== null) {
+      this._callback.editClick = callback;
+      rollUpButton.addEventListener('click', this.#editClickHandler);
+    }
   }
 
   #editClickHandler = (evt) => {
     evt.preventDefault();
-    // если в editClick() добавить this._data, то при закрытии формы стрелкой, будет сохраняться и обновляться точка. Без нее, не работает стрелка, так как аргументом прилетает при клике undefined
     this._callback.editClick();
   }
 
-  #setDatepicker = () => {
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  }
+
+  setCancelClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#deleteClickHandler);
+  }
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.deleteClick(MainFormView.parseDataToPoint(this._data));
+  }
+
+  #setDateFromPicker = () => {
+    if (this.#dateFromPicker) {
+      this.#dateFromPicker.destroy();
+      this.#dateFromPicker = null;
+    }
     this.#dateFromPicker = flatpickr(
-      this.element.querySelector('#event-start-time-1'),
+      this.element.querySelector('input[name=event-start-time]'),
       {
-        enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateFrom,
+        ['time_24hr']: true,
+        enableTime: true,
+        defaultDate: dayjs(this._data.dateFrom).toISOString(),
         onChange: this.#dateFromChangeHandler,
       }
     );
+  }
+
+  #setDateToPicker = () => {
+    if (this.#dateToPicker) {
+      this.#dateToPicker.destroy();
+      this.#dateToPicker = null;
+    }
     this.#dateToPicker = flatpickr(
-      this.element.querySelector('#event-end-time-1'),
+      this.element.querySelector('input[name=event-end-time]'),
       {
-        enableTime: true,
         dateFormat: 'd/m/y H:i',
-        defaultDate: this._data.dateTo,
+        ['time_24hr']: true,
+        enableTime: true,
+        defaultDate: dayjs(this._data.dateTo).toISOString(),
         onChange: this.#dateToChangeHandler,
       }
     );
@@ -125,37 +130,81 @@ export default class MainFormView extends SmartView {
 
   #setInnerHandlers = () => {
     this.element.querySelector('.event__type-list').addEventListener('change', this.#eventTypeChangeHandler);
-    // если ставить evt = change, то не отрабатывает с первого раза Save, так как change ожидает сперва снятие фокуса. Если ставить input, то почему-то слетает фокус после каждого символа
     this.element.querySelector('.event__input--price').addEventListener('change', this.#priceChangeHandler);
     this.element.querySelector('.event__input--destination').addEventListener('change', this.#destinationChangeHandler);
+    this.element.querySelector('.event__available-offers').addEventListener('change', this.#offerChangeHandler);
   }
 
   #eventTypeChangeHandler = (evt) => {
     evt.preventDefault();
     this.updateData({
-      offer: getOffer(evt.target.value)
+      type: evt.target.value,
+      offers: this.#newOffers[evt.target.value]
     });
   }
 
   #priceChangeHandler = (evt) => {
     evt.preventDefault();
-    this.updateData({
-      basePrice: evt.target.value,
-    });
+    const priceInputElement = this.element.querySelector('.event__input--price');
+
+    if (evt.target.value !== '') {
+      this.updateData({
+        basePrice: Number(evt.target.value)
+      }, true);
+    } else {
+      priceInputElement.setCustomValidity('Enter price');
+    }
   }
 
   #destinationChangeHandler = (evt) => {
     evt.preventDefault();
+    const destinationInputElement = this.element.querySelector('.event__input--destination');
+    const newDestination = this.#newDestinations.find((destination) => destination.name === evt.target.value);
+
+    if (newDestination) {
+      this.updateData({
+        destination: {
+          description: newDestination.description,
+          name: newDestination.name,
+          pictures: newDestination.pictures,
+        }
+      });
+    } else {
+      destinationInputElement.setCustomValidity('Choose name from list');
+    }
+  }
+
+  #offerChangeHandler = (evt) => {
+    evt.preventDefault();
+
+    const checkedOffers = Array.from(this.element.querySelectorAll('.event__offer-checkbox:checked'));
+
+    const checkedOffersValues = checkedOffers.map((offer) => ({
+      id: Number(offer.dataset.id),
+      title: offer.dataset.title,
+      price: Number(offer.dataset.price),
+    }));
+
     this.updateData({
-      destination: {
-        name: evt.target.value,
-        description: randomStrings(DESCRIPTION),
-        pictures: randomLinks(DESCRIPTION),
-      }
+      offers: [...checkedOffersValues],
     });
   }
 
-  static parsePointToData = (point) => ({ ...point });
-  static parseDataToPoint = (data) => ({ ...data });
+  static parsePointToData = (point) => ({
+    ...point,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false
+  });
+
+  static parseDataToPoint = (data) => {
+    const point = { ...data };
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
+  };
 }
 
